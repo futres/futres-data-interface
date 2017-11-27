@@ -1,9 +1,5 @@
 # About
-The reservemapper application is a lightweight interface for browsing data from selected reserves.  It is 
-focused on particular spatial areas, using the extents of relevant reserves to search specimen occurrence
-records from GBIF, Ecoreader and other data sources relevant to the reserve itself.  The purpose of the
-reserve mapper was to offer a means for exploring the reserves associated with the Berkeley Natural History 
-Museums but can easily be extended to support any other network of reserves globally.
+A lightweight interface for visualizing global plant phenology that has been indexed using the ppo-data-pipeline (https://github.com/biocodellc/ppo-data-pipeline)
 
 # first time installation steps
 (may need to install npm)

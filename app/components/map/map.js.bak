@@ -15,75 +15,37 @@
 
         Map.prototype = {
             _markers: [],
-            _clusterLayer: null,
-            _map: null,
-            _mapTiles: null,
-            _satelliteTiles: null,
-            _boundingBox: null,
             /**
              * @param mapId the id of the the div container for the map
              */
             init: function (mapId) {
+                var startBounds = [
+                    [2.811371, -168.513794], //Southwest
+                    [71.635993, -48.279419] //Northeast
+                ];
+
                 this._map = L.map(mapId, {
                     center: [0, 0],
-                    zoom: 1,
+                    zoom: 0,
                     closePopupOnClick: false,
                     maxBoundsViscocity: .5
-                });
-
-                // fill screen with map, roughly 360 degrees of longitude
-                var z = this._map.getBoundsZoom([[90, -180], [-90, 180]], true);
-                this._map.setZoom(z);
+                }).fitBounds(startBounds);
 
                 this._mapTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token={access_token}',
                     {access_token: MAPBOX_TOKEN});
 
                 this._mapTiles.addTo(this._map);
+                this._base = this._mapTiles;
 
                 this._satelliteTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token={access_token}',
                     {access_token: MAPBOX_TOKEN});
 
-                this._clusterLayer = L.markerClusterGroup({chunkedLoading: true, maxClusterRadius: 40});
-            },
+                this._usgsTiles = L.tileLayer.wms('https://basemap.nationalmap.gov/arcgis/services/USGSImageryOnly/MapServer/WMSServer', { layers: 0, maxZoom: 8 });
+                this._esriTopoTiles = L.tileLayer.wms('http://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { layers: 0 });
 
-            /**
-             *
-             * @param data data is a json array of objects. Each object should contain a key matching the given latColumn
-             * & lngColumn
-             * @param popupContentCallback the function to call to populate the popup box content. Will be passed the current resource
-             */
-            setMarkers: function (data, popupContentCallback) {
-                this._clearMap();
+                this._clusterLayer = L.markerClusterGroup({chunkedLoading: true});
 
                 var _this = this;
-                angular.forEach(data, function (resource) {
-                    var lat = resource._source[_this.latColumn];
-                    var lng = resource._source[_this.lngColumn];
-
-                    var marker = L.marker([lat, lng]);
-
-                    if (typeof popupContentCallback === 'function') {
-                        marker.bindPopup(popupContentCallback(resource));
-                    }
-
-                    _this._markers.push(marker);
-                });
-
-                this._clusterLayer.addLayers(this._markers);
-
-                this._map
-                    .addLayer(this._clusterLayer)
-                    .setMinZoom(1)
-                    .spin(false);
-
-		// Adjust bounds
-                if (this._markers.length > 0) {
-		    var bounds = this._clusterLayer.getBounds()
-                    this._map.fitBounds(bounds);
-                }
-
-                this._map.on('move', this._updateMarkerLocations.bind(this));
-
                 this._map.on('dragstart', function () {
                     var centerLng = _this._map.getCenter().lng;
                     // the following is how leaflet internally calculates the max bounds. Leaflet doesn't provide a way
@@ -95,17 +57,84 @@
 
                     _this._map.setMaxBounds([nwCorner, seCorner]);
                 });
+            },
 
+            /**
+             *
+             * @param data data is a json array of objects. Each object should contain a key matching the given latColumn
+             * & lngColumn
+             * @param popupContentCallback the function to call to populate the popup box content. Will be passed the current resource
+             */
+            setMarkers: function (data, popupContentCallback, zoomTo) {
+                this._clearMap();
+                this.addMarkers(data, popupContentCallback, zoomTo);
+                this._map.on('move', this._updateMarkerLocations.bind(this));
+            },
+
+            addMarkers: function(data, popupContentCallback, zoomTo) {
+                var _this = this;
+                angular.forEach(data, function (resource) {
+                    var lat = resource[_this.latColumn];
+                    // var lng = L.Util.wrapNum(resource[_this.lngColumn], [0,360], true); // center on pacific ocean
+                    var lng = resource[_this.lngColumn];
+
+                    if (typeof lat === 'number' & typeof lng === 'number') {
+                        var marker = L.marker([lat, lng]);
+
+                        if (typeof popupContentCallback === 'function') {
+                            marker.bindPopup(popupContentCallback(resource));
+                        }
+
+                        _this._markers.push(marker);
+                    }
+                });
+
+                this._clusterLayer.addLayers(this._markers);
+
+                this._map
+                    .addLayer(this._clusterLayer)
+                    .setMinZoom(1)
+                    .spin(false);
+
+                if (zoomTo && this._markers.length > 0) {
+                    this._map.fitBounds(this._clusterLayer.getBounds(), {padding:[30, 30]});
+                } else {
+                    // hack to get markers to render
+                    // this._map.setZoom(this._map.getZoom() - 1, {animate: false});
+                    // this._map.setZoom(this._map.getZoom() + 1, {animate: false});
+                }
+            },
+
+            addLayer: function(l) {
+                this._map.addLayer(l);
+                this._map.fitBounds(l.getBounds(), {padding: [30, 30]});
+            },
+
+            removeLayer: function(l) {
+                this._map.removeLayer(l);
             },
 
             satelliteView: function () {
-                this._map.removeLayer(this._mapTiles);
+                this._map.removeLayer(this._base);
                 this._map.addLayer(this._satelliteTiles);
+                this._base = this._satelliteTiles;
             },
 
             mapView: function () {
-                this._map.removeLayer(this._satelliteTiles);
+                this._map.removeLayer(this._base);
                 this._map.addLayer(this._mapTiles);
+                this._base = this._mapTiles;
+            },
+
+            usgsView: function () {
+                this._map.removeLayer(this._base);
+                this._map.addLayer(this._usgsTiles);
+                this._base = this._usgsTiles;
+            },
+            esriTopoView: function () {
+                this._map.removeLayer(this._base);
+                this._map.addLayer(this._esriTopoTiles);
+                this._base = this._esriTopoTiles;
             },
 
             drawBounds: function (createCallback) {

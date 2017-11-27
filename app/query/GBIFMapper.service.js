@@ -1,3 +1,7 @@
+/**
+ * GBIFMapper factory
+ * fetches data and populates markers and tables?
+ */
 (function () {
     'use strict';
 
@@ -55,8 +59,8 @@
         function _queryJson(query, page, resetMarkers) {
             return queryService.queryJson(query, page)
                 .then(function (results) {
+		    //alert(JSON.stringify(results))
                     _mapResults(results, resetMarkers);
-
                     return results;
                 }).catch(function(err) {
                     alerts.error('Failed to load some query results');
@@ -68,9 +72,9 @@
         function _mapResults(results, resetMarkers) {
             queryResults.append(results);
             if (resetMarkers) {
-                queryMap.setMarkers(results.data);
+                queryMap.setMarkers(results.data._source);
             } else {
-                queryMap.addMarkers(results.data);
+                queryMap.addMarkers(results.data._source);
             }
         }
     }

@@ -42,7 +42,7 @@
 }
 
 .query-bar {
-    background-color: rgba(96, 134, 152, 0.6);
+    background-color: rgba(20, 126, 77, 1);
 }
 
 .query-bar .actions {
@@ -65,16 +65,17 @@
 }
 
 .query-bar .alerts .alert-info {
-    border-color: #DBBE62;
-    background-color: rgba(243, 212, 106, 0.9);
+    #border-color: #DBBE62;
+    #background-color: rgba(243, 212, 106, 0.9);
+    border-color: #000000;
 }
 
 .query-bar .alerts .alert-info .close {
-    color: #5d4d06;
+    color: black;
 }
 
 .query-bar .alerts .alert-info > a {
-    color: #03A9F4;
+    color: black;
 }
 
 .query-bar .alerts .alert-error {
@@ -83,9 +84,6 @@
     color: white;
 }
 
-.query-bar .alerts .alert-info .close {
-    color: #471411;
-}
 
 .sidebar {
     min-width: 500px;
@@ -302,3 +300,7 @@
 .ui-select-search {
     font-size: 12px;
 }
+
+
+
+

@@ -22,16 +22,14 @@
             Map.prototype.addMarkers.call(this, data, generatePopupContent, zoomTo);
         };
 
-        return new QueryMap('decimalLatitude', 'decimalLongitude');
+        return new QueryMap('latitude', 'longitude');
 
-        function generatePopupContent(resource) {
-            return "<strong>institutionCode</strong>:  " + resource.institutionCode+ "<br>" +
-		"<strong>basisOfRecord</strong>:  " + resource.basisOfRecord + "<br>" +
-		"<strong>eventDate</strong>:  " + resource.eventDate + "<br>" +
-		"<strong>recordedBy</strong>:  " + resource.recordedBy + "<br>" +
-                "<strong>ScientificName</strong>:  " + resource.scientificName + "<br>" +
-                "<strong>Locality, Country</strong>:  " + resource.locality + ", " + resource.country + "<br>" +
-                "<a href='http://www.gbif.org/occurrence/" + resource.key + "' target='_blank'>Occurrence details from GBIF site</a>";
+	function generatePopupContent(resource) {
+            return "<strong>Genus</strong>:  " + resource._source.genus + "<br>" +
+                "<strong>Species</strong>:  " + resource._source.specificEpithet+ "<br>" +
+                "<strong>Year</strong>:  " + resource._source.year + "<br>" +
+                "<strong>DayOfYear</strong>:  " + resource._source.dayOfYear+ "<br>" +
+                "<strong>Source</strong>:  " + resource._source.source + "<br>";
         }
     }
 })();

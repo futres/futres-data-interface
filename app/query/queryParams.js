@@ -7,82 +7,69 @@
     queryParams.$inject = ['QueryBuilder'];
 
     function queryParams(QueryBuilder) {
-        var defaultParams = {
-            queryString: null,
-            taxonKey: null,
-            institutionCode: null,
-            collectionCode: null,
-            basisOfRecord: null,
-            species: null,
-            country: null,
-            fromYear: null,
-            toYear: null,
-            bounds: null
-        };
+      var defaultParams = {
+	                  fromYear: null,
+	                  toYear: null,
+	                  fromDay: null,
+	                  toDay: null,
+	                  genus: null,
+	                  specificEpithet: null,
+	                  source: null
+	              };
 
-        var params = {
-            build: buildQuery,
-            clear: clear
-        };
+	            var params = {
+			                traits: [],
+			                build: buildQuery,
+			                clear: clear
+			            };
 
-        activate();
-
+	            activate();
         return params;
 
         function activate() {
             clear();
         }
 
-        function buildQuery() {
-            var builder = new QueryBuilder();
 
-            if (params.queryString) {
-                builder.add("q", params.queryString);
-            }
-            if (params.taxonKey) {
-               builder.add("taxonKey", params.taxonKey);
-            }
+	        function buildQuery(source) {
+			            var builder = new QueryBuilder();
 
-            if (params.country) {
-                builder.add("country", params.country);
-            }
-            if (params.basisOfRecord) {
-                builder.add("basisOfRecord", params.basisOfRecord);
-            }
+			            angular.forEach(params.traits, function (t) {
+					                    builder.add("+plantStructurePresenceTypes:\"" + t + "\"");
+					                });
 
-            if (params.locality) {
-                builder.add("locality", params.locality);
-            }
+			            if (params.fromYear) {
+					                    builder.add("+year:>=" + params.fromYear);
+					                }
 
-            if (params.institutionCode) {
-                builder.add("institutionCode", params.institutionCode);
-            }
-            if (params.collectionCode) {
-                builder.add("collectionCode", params.collectionCode);
-            }
+			            if (params.toYear) {
+					                    builder.add("+year:<=" + params.toYear);
+					                }
 
-            if (params.fromYear || params.toYear) {
-                builder.add("year", params.fromYear + "," + params.toYear);
-            }
+			            if (params.fromDay) {
+					                    builder.add("+dayOfYear:>=" + params.fromDay);
+					                }
 
-            if (params.bounds) {
-                var ne = params.bounds.getNorthEast();
-                var sw = params.bounds.getSouthWest();
+			            if (params.toDay) {
+					                    builder.add("+dayOfYear:<=" + params.toDay);
+					                }
 
-                // if (ne.lng > sw.lng) {
-                    builder.add("decimalLongitude", sw.lng + "," + ne.lng);
-                // } else {
-                //     builder.add("decimalLongitude:>=" + escapeNum(sw.lng) + " +decimalLongitude:<=180)");
-                //     builder.add("(+decimalLongitude:<=" + escapeNum(ne.lng) + " +decimalLongitude:>=\\-180))");
-                // }
+			            if (params.genus) {
+					                    builder.add("+genus:" + params.genus);
+					                }
 
-                builder.add("decimalLatitude", sw.lat + "," + ne.lat);
-            }
+			            if (params.specificEpithet) {
+					                    builder.add("+specificEpithet:" + params.specificEpithet);
+					                }
 
+			            if (params.source) {
+					                    builder.add("+source:" + params.source);
+					                }
 
-            return builder.build();
+			            builder.setSource(source);
+			            return builder.build();
 
-        }
+			        }
 
         function clear() {
             angular.extend(params, defaultParams);

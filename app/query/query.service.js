@@ -1,78 +1,139 @@
+/**
+ * query.service.js
+ * Structures the query request to ppo-data-service
+ */
 (function () {
     'use strict';
 
     angular.module('map.query')
         .factory('queryService', queryService);
 
-    queryService.$inject = ['$http', 'alerts'];
+    queryService.$inject = ['$http', '$window', 'queryMap', 'queryResults', 'alerts', '$q'];
 
-    function queryService($http, alerts) {
+    function queryService($http, $window,  queryMap, queryResults, alerts, $q ) {
 
         var queryService = {
             queryJson: queryJson,
-            countryCodes: countryCodes,
-            basisOfRecords: basisOfRecords,
-            spatialLayers: spatialLayers
+            downloadExcel: downloadExcel,
+            downloadKml: downloadKml,
+            downloadCsv: downloadCsv,
+            downloadFasta: downloadFasta,
+            downloadFastq: downloadFastq
         };
 
         return queryService;
 
-        function queryJson(query, page) {
-            alerts.removeTmp();
-            return $http.get("http://api.gbif.org/v1/occurrence/search?limit=300" + "&offset=" + 300*page + "&" + query)
-               .then(queryJsonComplete);
+	function queryLooper(query,from,size,source) {
+                    //alerts.removeTmp();
+                    var url = "http://www.dev.plantphenology.org/api/_search?from=" + from + "&size=" + size + "&_source=" + encodeURIComponent(source) + "&" + query;
+		    alerts.info("Loading results ...");
+            	    return $http({
+                	method: 'GET',
+                	url: url,
+                	//params: query,
+                	keepJson: true
+            	     }).then(queryJsonComplete);
 
-            function queryJsonComplete(response) {
-                var results = {
-                    size: 0,
-                    totalElements: 0,
-                    data: []
-                };
-                if (response.data) {
-                    results.size = response.data.limit;
-                    results.totalElements = response.data.count;
-                    if (results.totalElements === 0) {
-                        alerts.info("No results found.")
-                    }
-                    results.data = response.data.results;
-                }
-                return results;
+ 	           function queryJsonComplete(response) {
+			// Removing the loading alert
+                        var a = alerts.getAlerts();
+         		for (var i = 0; i < a.length; i++) {
+                       	     if (a[i].msg === 'Loading results ...') {
+                                  alerts.remove(a[i]);
+                             }
+                        }
+			// Initialize the results array
+                	var results = {
+                    		size: 0,
+                    		totalElements: 0,
+                    		data: []
+                	};
+
+                	if (response.data) {
+			    // Found elements is total possible results returned by ES
+	             	    results.foundElements = response.data.hits.total;
+
+			    // if the number of elements in result set is larger than the "size" then constrain variables 
+			    // accordingly.  Uses ES max record limit of 10,000
+                            if (results.foundElements > size) {
+                                alerts.info(results.foundElements +" total matches to query. Returned results limited to " + size)
+                    	        results.size = size
+	             	    	results.totalElements = size
+                            } else {
+                    	        results.size = results.foundElements;
+	             	    	results.totalElements = results.foundElements;
+			    }
+
+                            if (results.foundElements == 0) {
+                                alerts.info("No results found.")
+                            }
+
+                            results.data = response.data.hits.hits;
+                	}
+
+                	return results;
+            	}
+
+	}
+
+	    
+	// Manage the query to provider
+        function queryJson(query, page, source) {
+	   	var query = "q=genus:Quercus";
+ 	        var from = 0;
+	        //var size = 2000;
+	        var size = 100;
+	        //var maxRecords = 10000;
+	        var maxRecords = 100;
+		
+		// TODO: write an elasticsearch query client that can fetch more than 10,000 records using "scroll"
+		// for now, am using the "queryLooper" function which was designed to loop through successive queries.
+		// the "scroll" function, howerver, works differently
+                return queryLooper(query, 0, maxRecords, source);
+	}
+
+        function downloadExcel(query) {
+            download("excel", query);
+        }
+
+        function downloadKml(query) {
+            download("kml", query);
+        }
+
+        function downloadCsv(query) {
+            download("csv", query);
+        }
+
+        function downloadFasta(query) {
+            download("fasta", query);
+        }
+
+        function downloadFastq(query) {
+            download("fastq", query);
+        }
+
+        function download(path, query) {
+            return $http({
+                method: 'GET',
+                url: REST_ROOT + "projects/query/" + path,
+                params: query,
+                keepJson: true
+            })
+                .then(downloadFile)
+                .catch(downloadFileFailed);
+        }
+
+        function downloadFile(response) {
+            if (response.status == 204) {
+                alerts.info("No results found.");
+                return
             }
+
+            $window.open(response.data.url);
         }
 
-        function basisOfRecords() {
-            return $http.get('http://api.gbif.org/v1/enumeration/basic/BasisOfRecord')
-                .then(function(response) {
-                    var records = [];
-
-                    angular.forEach(response.data, function(c) {
-                        records.push({
-                            'name': c,
-                            'record': c
-                          });
-                    });
-
-                    return records;
-                });
-        }
-        function countryCodes() {
-            return $http.get('http://api.gbif.org/v1/enumeration/country')
-                .then(function(response) {
-                    var codes = [];
-
-                    angular.forEach(response.data, function(c) {
-                        codes.push({
-                            'name': c.title,
-                            'code': c.iso2
-                            });
-                    });
-
-                    return codes;
-                });
-        }
-
-        function spatialLayers() {
-            return $http.get('query/spatialLayers.json');
+        function downloadFileFailed(response) {
+            alerts.info("Failed downloading file!");
         }
     }
 })();

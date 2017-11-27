@@ -9,6 +9,7 @@
     function QueryBuilder() {
 
         function QueryBuilder() {
+            this.source = [];
             this.queryString = "";
         }
 
@@ -19,23 +20,11 @@
                     this.queryString += "&";
                 }
 
-		// Requests to GBIF for Basis of Record only work when each BOR call is its own 
-		// query string
-		if (key == "basisOfRecord") {
-		    var i = 0
-		    for (var bor in val) {
-                         this.queryString += key + "=" + val[bor];
-			 if (i < val.length) {
-			     this.queryString += "&";
-			 }
-			 i++
-		    }
-		// All other calls take multiple values as comma separated
-		} else {
                     this.queryString += key + "=" + val;
-		}
             },
-
+            setSource: function (source) {
+                this.source = source;
+            },
             build: function () {
                 if (this._isEmpty()) {
                     this.queryString = "q=*";

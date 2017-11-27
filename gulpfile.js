@@ -4,6 +4,8 @@ var uglify = require('gulp-uglify');
 var minifyCss = require('gulp-minify-css');
 var replace = require('gulp-replace');
 var rimraf = require('rimraf');
+var jsdoc = require('gulp-jsdoc3');
+
 
 gulp.task('default', ['copy-assets'], function() {
     gulp.src(['app/**/*.html', 'app/**/*.ico', '!app/index-async.html', '!app/bower_components/**/*.html'])

@@ -10,11 +10,11 @@
 
         var queryResults = {
             size: 0,
-            totalElements: 0,
+            total: 0,
             data: [],
             isSet: false,
             update: update,
-            append: append,
+	    append: append,
             clear: clear
         };
 
@@ -38,8 +38,6 @@
         function clear() {
             queryResults.data = [];
             queryResults.isSet = false;
-            queryResults.size = 0;
-            queryResults.totalElements = 0;
         }
     }
 })();
