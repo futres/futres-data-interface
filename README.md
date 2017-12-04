@@ -1,5 +1,8 @@
 # About
-A lightweight interface for visualizing global plant phenology that has been indexed using the ppo-data-pipeline (https://github.com/biocodellc/ppo-data-pipeline)
+A lightweight interface for visualizing global plant phenology that has been indexed using the 
+[https://github.com/biocodellc/ppo-data-pipeline](ppo-data-pipeline).  This interface is written
+in angularJS, leaflet, and bootstrap and calls data services using the 
+[https://github.com/biocodellc/ppo-data-server](ppo-data-server).
 
 # first time installation steps
 (may need to install npm)
@@ -16,7 +19,7 @@ npm start (runs at port 8000 by default)
 ```
 gulp clean
 gulp   (takes all the javascript and html, minimifies and puts in public)
-rsync -rv public/ user@someserver.edu:///home/user/reservemapper/ (rsync to server)
+rsync -rv public/ user@someserver.edu:///home/user/code/ppo-data-interface/ (rsync to server)
 ```
 
 # Serving on the Web

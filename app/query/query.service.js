@@ -24,13 +24,20 @@
         return queryService;
 
 	function queryLooper(query,from,size,source) {
-                    //alerts.removeTmp();
-                    var url = "http://www.dev.plantphenology.org/api/_search?from=" + from + "&size=" + size + "&_source=" + encodeURIComponent(source) + "&" + query;
+                 //   alerts.removeTmp();
+		//q=year:2012%20AND%20genus:Quercus%20AND%20plantStructurePresenceTypes:"obo:PPO_0002324"
+		//+plantStructurePresenceTypes:"obo:PPO_0002324"=undefined&+genus:Abies=undefined
+	   	//var query = "q=genus:Quercus";
+		    // remove all alerts
+	  		var a = alerts.getAlerts();
+                        for (var i = 0; i < a.length; i++) { alerts.remove(a[i]); }	
+                    var url = "http://www.dev.plantphenology.org/api/_search?from=" + from + "&size=" + size + "&_source=" + encodeURIComponent(source); 
 		    alerts.info("Loading results ...");
+		    console.log(url+JSON.stringify(query))
             	    return $http({
                 	method: 'GET',
                 	url: url,
-                	//params: query,
+                	params: query,
                 	keepJson: true
             	     }).then(queryJsonComplete);
 
@@ -79,12 +86,11 @@
 	    
 	// Manage the query to provider
         function queryJson(query, page, source) {
-	   	var query = "q=genus:Quercus";
  	        var from = 0;
 	        //var size = 2000;
-	        var size = 100;
+	        var size = 10000;
 	        //var maxRecords = 10000;
-	        var maxRecords = 100;
+	        var maxRecords = 10000;
 		
 		// TODO: write an elasticsearch query client that can fetch more than 10,000 records using "scroll"
 		// for now, am using the "queryLooper" function which was designed to loop through successive queries.

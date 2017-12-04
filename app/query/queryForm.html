@@ -1,15 +1,22 @@
 <div class="col-xs-12" ng-controller="QueryFormController as queryFormVm">
+
+	<modal-dialog id='traiter' show='modalShown' dialog-title='{{modalType}}' height='200px' width='70%'>
+	    {{modalText}}
+    </modal-dialog>
+
     <form method="POST" name="queryForm">
         <div class="form form-horizontal">
 
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Traits</label>
+                    <label class="control-label" >Traits</label>
+  			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Traits")'></i></a> 
                 </div>
+
 		<div class="col-xs-9">
                     <select ng-options="key as value for (value,key) in queryFormVm.traits"
                         ng-model="queryFormVm.params.traits"
-                           class="form-control input-sm" required multiple>
+                           class="form-control input-sm" required multiple >
                         <option value="">-- Select trait --</option>
                     </select>
                 </div>	
@@ -17,28 +24,28 @@
             </div>
 
 
-	    <!--
-            <div class="form-group">
-                <div class="col-xs-3">
-                    <label class="control-label">Genus</label>
-                </div>
-                <div class="col-xs-9">
-                    <input ng-model="queryFormVm.params.genus" type="text"
-                           class="form-control input-sm"/>
-                </div>
-            </div>
-	    -->
 
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Name</label>
+                    <label class="control-label">Genus</label>
+  			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Genus")'></i></a> 
                 </div>
                 <div class="col-xs-9">
-                    <select ng-options="s for s in queryFormVm.scientificNames"
-                        ng-model="queryFormVm.params.scientificName"
-                           class="form-control input-sm" required multiple>
-                        <option value="">-- Select Scientific Name(s) --</option>
+                    <select ng-options="s for s in queryFormVm.genus"
+                        ng-model="queryFormVm.params.genus"
+                           class="form-control input-sm" required>
+                        <option value="">-- Select Genus --</option>
                     </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-xs-3">
+                    <label class="control-label">Species</label>
+                </div>
+                <div class="col-xs-9">
+                    <input ng-model="queryFormVm.params.specificEpithet" type="text"
+                           class="form-control input-sm"/>
                 </div>
             </div>
 
@@ -62,9 +69,9 @@
                     <label class="control-label">Year</label>
                 </div>
                 <div class="col-xs-9">
-		    <rzslider class="custom-slider" rz-slider-model="yearslider.minRange"
-          		rz-slider-high="yearslider.maxRange"
-          		rz-slider-options="yearslider.options"></rzslider>	
+		    <rzslider class="custom-slider" rz-slider-model="queryFormVm.params.fromYear"
+          		rz-slider-high="queryFormVm.params.toYear"
+          		rz-slider-options="queryFormVm.year.options"></rzslider>	
                 </div>
             </div>
             <div class="form-group">
@@ -72,9 +79,9 @@
                     <label class="control-label">Day of Year</label>
                 </div>
                 <div class="col-xs-9">
-		    <rzslider class="custom-slider" rz-slider-model="dayslider.minRange"
-          		rz-slider-high="dayslider.maxRange"
-          		rz-slider-options="dayslider.options"></rzslider>	
+		    <rzslider class="custom-slider" rz-slider-model="queryFormVm.params.fromDay"
+          		rz-slider-high="queryFormVm.params.toDay"
+          		rz-slider-options="queryFormVm.day.options"></rzslider>	
                 </div>
             </div>
 
@@ -87,15 +94,21 @@
 
 </div>
         <div class="form-group">
+			
                 <div class="col-xs-12">
-                    <label class="hidden-xs control-label">About this site</label>
+			<label class="label-warning">THIS SITE IS IN DEVELOPMENT!</label>
                 </div>
                 <div class="col-xs-12">
     	    <label class="hidden-xs information-text">
-      Field Data on plant phenology is made accessible here based on inputs from NPN, PEP725, and NEON partners. Incoming
+		    <i>Field Data on plant phenology is made accessible here based on inputs from NPN, PEP725, and NEON partners. Incoming
       trait data is processed using the ppo-data-pipeline with annotations from the plant phenology ontology and 
-      phenological stage inferences processed using ontopilot's reasoner.   Funding support from the USGS NSF-SAVI Award Number 1321595, 
-      the National Ecological Observatory Network, and the USGS Powell Center.
+      phenological stage inferences processed using ontopilot's reasoner.</i>  
+		    <p></p>
+		    <i>
+			The creators of this site and funders assume no legal liability or responsibility whatsoever for the accuracy, completeness, or usefulness of any such information presented here.
+		        Funding support from the USGS NSF-SAVI Award Number 1321595, the National Ecological Observatory Network, and the USGS Powell Center.
+		    </i>
+
     	     </label>
 		</div>
     </form>

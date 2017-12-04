@@ -79,7 +79,11 @@
 		// Adjust bounds
                 if (this._markers.length > 0) {
 		    var bounds = this._clusterLayer.getBounds()
-                    this._map.fitBounds(bounds);
+	            try {			
+                    	this._map.fitBounds(bounds);
+	            } catch(err) {
+                    	this._map.fitWorld();
+		    }
                 }
 
                 this._map.on('move', this._updateMarkerLocations.bind(this));
