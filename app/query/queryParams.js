@@ -8,6 +8,7 @@
 
     function queryParams(QueryBuilder) {
         var defaultParams = {
+            traits: null,
             fromYear: null,
             toYear: null,
             fromDay: null,
@@ -18,7 +19,7 @@
         };
 
         var params = {
-            traits: [],
+            //traits: [],
             build: buildQuery,
             clear: clear
         };
@@ -34,9 +35,12 @@
        function buildQuery(source) {
            var builder = new QueryBuilder();
 
-           angular.forEach(params.traits, function (t) {
-              builder.add("+plantStructurePresenceTypes:\"" + t + "\"");
-           });
+           //angular.forEach(params.traits, function (t) {
+            //  builder.add("+plantStructurePresenceTypes:\"" + t + "\"");
+           //});
+           if (params.traits) {
+               builder.add("+plantStructurePresenceTypes:\"" + params.traits+"\"");
+           }
            if (params.fromYear) {
                builder.add("+year:>=" + params.fromYear);
            }

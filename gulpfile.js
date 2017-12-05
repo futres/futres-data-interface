@@ -27,6 +27,8 @@ gulp.task('copy-assets', function() {
         .pipe(gulp.dest('public/css/images/'));
     gulp.src('app/*.png')
         .pipe(gulp.dest('public/'));
+    gulp.src('app/*.ico')
+        .pipe(gulp.dest('public/'));
     gulp.src('app/bower_components/jquery/dist/jquery.min.js')
         .pipe(gulp.dest('public/bower_components/jquery/dist/'));
     gulp.src('app/bower_components/jquery-ui/jquery-ui.min.js')

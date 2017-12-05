@@ -3,24 +3,46 @@
     var app = angular.module('map.query');
     //var app = angular.module('map.query');
     app.controller('QueryFormController', QueryFormController);
-    app.$inject = [  '$scope', 'ui-bootstrap', 'queryParams', 'queryService', 'queryMap', 'queryResults', 'usSpinnerService', 'alerts'];
-    function QueryFormController($scope, queryParams, queryService, queryMap, queryResults, usSpinnerService, alerts) {
+    app.$inject = [  '$scope', 'ui-bootstrap', 'queryParams', 'queryService', 'queryMap', 'queryResults', 'usSpinnerService', 'alerts', '$sce'];
+    function QueryFormController($scope, queryParams, queryService, queryMap, queryResults, usSpinnerService, alerts, $sce) {
  
         // toggle modal dialog
         $scope.modalShown = false;
         $scope.toggleModal = function(modalType) { 
 	    $scope.modalType = modalType
 	    if (modalType == "Traits") {
-            	$scope.modalText = "The traits listed here are derived from the Plant Phenology Ontology (PPO). Included are mostly upper level traits and  queries " +
-	    	"encompass all sub-traits.  For example, 'fruits present', will return both instances of both 'ripening fruits present' and 'unripe fruits present' from the PPO. " +  
-	    	"Currently, queries are limited to only one trait from the list. " + 
-	    	"For more information on the PPO, visit the PPO website (https://github.com/PlantPhenoOntology/ppo) "
+		$scope.modalText= $sce.trustAsHtml(
+            	"The traits listed here are derived from the Plant Phenology Ontology (PPO). Included are mostly upper level traits which will " +
+	    	"encompass all child traits.  For example, a query for 'fruits present', will return instances of 'ripening fruits present', "+
+	        "'unripe fruits present', and 'ripe fruits present' from the PPO. Currently, this interface enables searching on one trait at time. " + 
+	    	"For more information on the PPO, visit the <a href='https://github.com/PlantPhenoOntology/ppo' target='_blank'>PPO Website</a>." +
+	    	"<p></p>For NPN and NEON data, all present traits were inferred by looking at positive count or percentages included with the source "+
+		"data.  For zero count or percentage data, the traits were inferred as absent.  To determine how mappings were assigned for each data " +
+		"source, visit the <a href='https://github.com/biocodellc/ppo-data-pipeline/blob/master/projects/pep725/phenophase_descriptions.csv' target='_blank'>PEP725</a>, <a href='https://github.com/biocodellc/ppo-data-pipeline/blob/master/projects/npn/phenophase_descriptions.csv' target='_blank'>NPN</a>, or <a href='https://github.com/biocodellc/ppo-data-pipeline/blob/master/projects/neon/phenophase_descriptions.csv' target='_blank'>NEON</a> mapping tables at the <a href='https://github.com/biocodellc/ppo-data-pipeline' target='_blank'>ppo-data-pipeline</a> site.");
 	    } else if (modalType == "Genus") {
-            	$scope.modalText = "The genus list contains plant genus names that have 3,000 or more observations from source databases."
+            	$scope.modalText = $sce.trustAsHtml("Queries on genus are required in order to help constrain the number of records returned on queries and improve the performance of the interface itself.  Also, we encourage genus level queries over genus + species queries since genus is typically a better metric for comparing phenological patterns across continents, which is the primary purpose of this interface.  The genus list contains only plant genus names that have 3,000 or more observations from source databases.");
+	    } else if (modalType == "Year") {
+            	$scope.modalText = $sce.trustAsHtml("NPN and NEON data, which constitutes all of the North American data in this portal, appear only after the year 2009, with the exception of the genus <i>Syringa</i> (Lilac).  NPN Lilac data begins in 1956.  PEP725 data constitutes all of our European data, and begins in 1868.");
+	    } else if (modalType == "Day of Year") {
+            	$scope.modalText = $sce.trustAsHtml("Constrain by the Day of Year a particular observation was made.  For instance, to view all traits appearing before day 100, slide the upper level slider from 365 down to 100, while leaving the lower end of the slider tool at 1.");
 	    }
 
 	    $scope.modalShown = !$scope.modalShown; 
 	};
+
+	// Submitted form
+        
+/*
+        $scope.isSubmitted = false;
+        $scope.add = function() {
+           if ($scope.queryForm.$valid) {
+              alert('here1')
+           } else {
+              alert('here2')
+              $scope.isSubmitted = true;
+           }
+        }
+*/
 
         var vm = this;
         var _currentLayer = undefined;
@@ -29,7 +51,7 @@
 
         var vm = this;
 
-	queryParams.fromYear= 1800;
+	queryParams.fromYear= 1868;
 	queryParams.toYear= 2018;
 	vm.year = {
 	    options: {
@@ -49,7 +71,7 @@
 	};
 
 
-        // select lists
+        // An abbreviated list of trist
         vm.traits = {
           'floral structures present':'obo:PPO_0002324',
           'fruits present':'obo:PPO_0002342',
@@ -61,75 +83,8 @@
           'abscised fruits or seeds present':'obo:PPO_0002358',
           'abscised cones or seeds present':'obo:PPO_0002359',
         }
-		    /*
-        vm.traits = {
-          'plant structures present':'obo:PPO_0002300',
-          '-------------------':'',
-          'new shoot system present':'obo:PPO_0002301',
-          *'new above-ground shoot-borne shoot systems present':'obo:PPO_0002302',
-          *'new shoot systems emerging from ground present':'obo:PPO_0002303',
-          'new shoot systems emerging from ground in first growth cycle present':'obo:PPO_0002304',
-          'seedling present':'obo:PPO_0002305',
-          'new shoot systems emerging from ground in later growth cycle present':'obo:PPO_0002306',
-          'leaf buds present':'obo:PPO_0002307',
-          'dormant leaf buds present':'obo:PPO_0002308',
-          'non-dormant leaf buds present':'obo:PPO_0002309',
-          'swelling leaf buds present':'obo:PPO_0002310',
-          'breaking leaf buds present':'obo:PPO_0002311',
-          '-------------------':'',
-          *'vascular leaves present':'obo:PPO_0002312',
-          'true leaves present':'obo:PPO_0002313',
-          'unfolding true leaves present':'obo:PPO_0002314',
-          'unfolded true leaves present':'obo:PPO_0002315',
-          'non-senescing unfolded true leaves present':'obo:PPO_0002316',
-          'senescing true leaves present':'obo:PPO_0002317',
-          'immature unfolded true leaves present':'obo:PPO_0002318',
-          'mature true leaves present':'obo:PPO_0002319',
-          'expanding unfolded true leaves present':'obo:PPO_0002320',
-          'expanded immature true leaves present':'obo:PPO_0002321',
-          'expanding true leaves present':'obo:PPO_0002322',
-          '-------------------':'',
-          'reproductive structures present':'obo:PPO_0002323',
-          *'floral structures present':'obo:PPO_0002324',
-          'non-senesced floral structures present':'obo:PPO_0002325',
-          'unopened floral structures present':'obo:PPO_0002326',
-          'open floral structures present':'obo:PPO_0002327',
-          'pollen-releasing floral structures present':'obo:PPO_0002328',
-          'senesced floral structures present':'obo:PPO_0002329',
-          'flowers present':'obo:PPO_0002330',
-          'non-senesced flowers present':'obo:PPO_0002331',
-          'unopened flowers present':'obo:PPO_0002332',
-          'open flowers present':'obo:PPO_0002333',
-          'pollen-releasing flowers present':'obo:PPO_0002334',
-          'senesced flowers present':'obo:PPO_0002335',
-          'flower heads present':'obo:PPO_0002336',
-          'non-senesced flower heads present':'obo:PPO_0002337',
-          'unopened flower heads present':'obo:PPO_0002338',
-          'open flower heads present':'obo:PPO_0002339',
-          'pollen-releasing flower heads present':'obo:PPO_0002340',
-          'senesced flower heads present':'obo:PPO_0002341',
-          *'fruits present':'obo:PPO_0002342',
-          'ripening fruits present':'obo:PPO_0002343',
-          'unripe fruits present':'obo:PPO_0002344',
-          'ripe fruits present':'obo:PPO_0002345',
-          '-------------------':'',
-          *'cones present':'obo:PPO_0002346',
-          'pollen cones present':'obo:PPO_0002347',
-          'fresh pollen cones present':'obo:PPO_0002348',
-          'open pollen cones present':'obo:PPO_0002349',
-          'pollen-releasing pollen cones present':'obo:PPO_0002350',
-          'seed cones present':'obo:PPO_0002351',
-          'fresh seed cones present':'obo:PPO_0002352',
-          'ripening seed cones present':'obo:PPO_0002353',
-          'unripe seed cones present':'obo:PPO_0002354',
-          'ripe seed cones present':'obo:PPO_0002355',
-          '-------------------':'',
-          'abscised plant structures present':'obo:PPO_0002356',
-          *'abscised leaves present':'obo:PPO_0002357',
-          *'abscised fruits or seeds present':'obo:PPO_0002358',
-          *'abscised cones or seeds present':'obo:PPO_0002359',
-        }
-	*/
+
+	// Dataserouces we are included
  	vm.dataSources = {
           'National Phenology Network':'NPN',
           'The European Phenology Database':'PEP725',
@@ -137,6 +92,7 @@
         };	
           //'Regional North American Herbaria Network':'ASU'
 
+	// An abbreviated list of genus names (selectec by genera with > 3,000 observations amongst data sources
 	vm.genus = [ 
 'Abies', 'Acacia', 'Acer', 'Achillea', 'Adenostoma', 'Aesculus', 'Alliaria', 'Alnus', 'Alopecurus', 'Ambrosia', 'Amelanchier', 'Amorpha', 'Andropogon', 'Anemone', 'Aquilegia', 'Aralia', 'Arctostaphylos', 'Arisaema', 'Aristida', 'Artemisia', 'Asclepias', 'Asimina', 'Atriplex', 'Avena', 'Baccharis', 'Berberis', 'Beta', 'Betula', 'Bouteloua', 'Bromus', 'Callicarpa', 'Calluna', 'Caltha', 'Calylophus', 'Campsis', 'Cardamine', 'Carex', 'Carnegiea', 'Carpinus', 'Carya', 'Ceanothus', 'Celtis', 'Centaurea', 'Cephalanthus', 'Ceratocephala', 'Cercis', 'Cercocarpus', 'Chamaedaphne', 'Chamerion', 'Chilopsis', 'Cirsium', 'Citrus', 'Cladrastis', 'Claytonia', 'Clintonia', 'Colchicum', 'Coleogyne', 'Cornus', 'Corylus', 'Crataegus', 'Cydonia', 'Cynodon', 'Cytisus', 'Dactylis', 'Diapensia', 'Diospyros', 'Diplacus', 'Echinacea', 'Ephedra', 'Epilobium', 'Ericameria', 'Eriogonum', 'Erythronium', 'Eschscholzia', 'Eurybia', 'Euthamia', 'Fagus', 'Ferocactus', 'Forsythia', 'Fouquieria', 'Fragaria', 'Fraxinus', 'Galanthus', 'Garrya', 'Gaultheria', 'Gaylussacia', 'Geum', 'Ginkgo', 'Gleditsia', 'Halesia', 'Hamamelis', 'Hedera', 'Helianthus', 'Hemerocallis', 'Heracleum', 'Hesperostipa', 'Heteromeles', 'Hordeum', 'Ilex', 'Impatiens', 'Juglans', 'Juniperus', 'Kalmia', 'Krascheninnikovia', 'Larix', 'Larrea', 'Lathyrus', 'Ledum', 'Liatris', 'Ligustrum', 'Lindera', 'Liquidambar', 'Liriodendron', 'Lonicera', 'Lupinus', 'Magnolia', 'Mahonia', 'Maianthemum', 'Malus', 'Medicago', 'Mertensia', 'Metrosideros', 'Microstegium', 'Monarda', 'Morella', 'Nyssa', 'Oemleria', 'Olea', 'Olneya', 'Opuntia', 'Ostrya', 'Oxydendrum', 'Panicum', 'Parkinsonia', 'Parthenocissus', 'Passiflora', 'Pennisetum', 'Penstemon', 'Philadelphus', 'Picea', 'Pinus', 'Pithecellobium', 'Platanus', 'Poa', 'Podophyllum', 'Populus', 'Prosopis', 'Prunus', 'Pseudoroegneria', 'Pseudotsuga', 'Pueraria', 'Pulsatilla', 'Purshia', 'Pyrus', 'Quercus', 'Ratibida', 'Rhamnus', 'Rhododendron', 'Rhus', 'Ribes', 'Robinia', 'Rosa', 'Rubus', 'Salix', 'Salvia', 'Sambucus', 'Sanguinaria', 'Sassafras', 'Schizachyrium', 'Scilla', 'Secale', 'Senna', 'Simmondsia', 'Solanum', 'Solidago', 'Sorbus', 'Sphaeralcea', 'Spiraea', 'Symphoricarpos', 'Symphyotrichum', 'Syringa', 'Tamarix', 'Taraxacum', 'Taxodium', 'Thalictrum', 'Thelesperma', 'Tilia', 'Toxicodendron', 'Trientalis', 'Trifolium', 'Trillium', 'Triticum', 'Tsuga', 'Tussilago', 'Ulmus', 'Umbellularia', 'Urochloa', 'Vaccinium', 'Verbesina', 'Viburnum', 'Viola', 'Vitis', 'Yucca', 'Zea', 'Zinnia'
 	]
@@ -178,6 +134,7 @@
 
 //	}
         function queryJson() {
+            if ($scope.queryForm.$invalid) return true;
     	    usSpinnerService.spin('query-spinner');
 
             queryService.queryJson(queryParams.build(), 0, SOURCE)
