@@ -1,11 +1,16 @@
 (function (angular) {
     'use strict';
     var app = angular.module('map.query');
-    //var app = angular.module('map.query');
     app.controller('QueryFormController', QueryFormController);
     app.$inject = [  '$scope', 'ui-bootstrap', 'queryParams', 'queryService', 'queryMap', 'queryResults', 'usSpinnerService', 'alerts', '$sce'];
     function QueryFormController($scope, queryParams, queryService, queryMap, queryResults, usSpinnerService, alerts, $sce) {
  
+     	// toggle download modal dialog
+        $scope.downloadModalShown = false;
+        $scope.toggleDownloadModal = function() { 
+            $scope.downloadModalShown = !$scope.downloadModalShown; 
+        };
+
         // toggle modal dialog
         $scope.modalShown = false;
         $scope.toggleModal = function(modalType) { 
@@ -51,13 +56,23 @@
 
         var vm = this;
 
+        // Handle Download Dialog Events
+        $scope.downloadButtonShown = false;
+        $scope.verify= function () {
+                if (queryParams.verifyDownload == "ppo2017") {
+                        $scope.downloadButtonShown = true;
+                }
+        }
+
 	queryParams.fromYear= 1868;
 	queryParams.toYear= 2018;
 	vm.year = {
 	    options: {
                 floor: queryParams.fromYear,
                 ceil: queryParams.toYear,
-		step: 1
+		step: 1,
+		// note this is never called
+		onEnd: function() {$scope.queryForm.$setPristine(false)}
 	    }
 	};
 	queryParams.fromDay= 1; 
@@ -66,7 +81,9 @@
 	    options: {
                 floor: 1,
                 ceil: 365,
-		step: 1
+		step: 1, 
+		// note this is never called
+		onEnd: function() {$scope.queryForm.$setPristine(false)}
 	    }
 	};
 
@@ -144,6 +161,7 @@
             function queryJsonSuccess(data) {
                 queryResults.update(data);
                 queryMap.setMarkers(queryResults.data);
+		$scope.queryForm.$setPristine(true)
             }
 
             function queryJsonFailed(response) {
@@ -156,138 +174,6 @@
             }
         }
 
- ////        function getBasisOfRecords() {
-     //                vm.basisOfRecord = records;
-      //           }, function () {
-       //              alerts.error('error fetching basisOfRecord terms');
-        //         });
-         //}
-        // function getCountryCodes() {
-        //     queryService.countryCodes()
-        //         .then(function (codes) {
-        //             vm.countryCodes = codes;
-        //         }, function () {
-        //             alerts.error('error fetching countryCodes');
-        //         });
-        // }
-
-//        function getSpatialLayers() {
- //           queryService.spatialLayers()
-  //              .then(function (response) {
-   //                 vm.spatialLayers = response.data;
-    //            }, function () {
-     //               alerts.error('error fetching spatial layers');
-      //          });
-       // }
    }
-
-   /* dynamically search taxon data */
-	/*
-   function searchTaxonData(characters,$http,rank) {
-	   return $http.get("http://api.gbif.org/v1/species/suggest/?q="+characters+"&rank="+rank)
-	       .then(queryJsonComplete);//function(response) {
-	   function queryJsonComplete(response) {
-               return response.data;
-            } 
-   }
-	*/
-
-   /* directive to handlie click events for the taxon empty contents x button */
-	/*
-   function taxonEmptyContents($filter,$http) {
-      return {
-        restrict: 'A',
-        scope: true,
-        link: function (scope, elem, attrs) {
-
-            function functionToBeCalled () {
-                scope.$apply(function(){
-	        	scope.queryFormVm.params.taxonomy = '';
-	        	scope.queryFormVm.params.taxonKey = '';
-	        	scope.queryFormVm.params.selectedTaxonomy = '';
-		});
-            }
-
-            elem.on('click', functionToBeCalled);
-        }
-      };
-   }
-	*/
-
-   /* Directive for working with taxon-based autocomplete functions */
-	/*
-   function taxonAutoCompleteDir($filter,$http) {
-         return {
-		require: "ngModel",
-                restrict: 'A',       
-                link: function (scope, elem, attrs, ngModel) {
-                        elem.autocomplete({
-                        source: function (request, response) {
-                            //term has the data typed by the user
-                            var params = request.term;
-			    // TODO: fetch radio button rank
-			    //var rank = scope.queryFormVm.params.rank
-	 		    var rank = (scope.queryFormVm.params.rank).toString().toLowerCase()
-				
-			    // cal searchTaxonData function and wait for response
-			    searchTaxonData(params,$http,rank)
-				.then(function(data) {
-                            	   if (data) { 
-					var result = ''
-					if (rank == "species")
-                                	    result = $filter('filter')(data, {'species':params});
-					if (rank == "genus")
-                                	    result = $filter('filter')(data, {'genus':params});
-					if (rank == "family")
-                                	    result = $filter('filter')(data, {'family':params});
-					if (rank == "order")
-                                	    result = $filter('filter')(data, {'order':params});
-					if (rank == "class")
-                                	    result = $filter('filter')(data, {'class':params});
-					if (rank == "phylum")
-                                	    result = $filter('filter')(data, {'phylum':params});
-					if (rank == "kingdom")
-                                	    result = $filter('filter')(data, {'kingdom':params});
-
-                                        angular.forEach(result, function (item) {
-						if (rank == "species") 
-                                               		item['value'] = item['scientificName'];
-						else
-                                               		item['value'] = item[rank];
-                                	});                       
-                            	    }
-                                    response(result);
-			    });
-                        },
-                        minLength: 2,                       
-			// Detect if user changes values and if ui['item'] (taxonomy) is null
-			// and then set other key values to empty
-                        change: function (event, ui) {
-		            if (ui['item'] == null) {
-				 alert('Click on name in drop-down list to filter by taxonomy')
-			         scope.queryFormVm.params.taxonomy = ''
-			         scope.queryFormVm.params.taxonKey = ''
-			         scope.queryFormVm.params.selectedTaxonomy = ''
-			    } 
-                        },
-                        select: function (event, ui) {
-                           //force a digest cycle to update taxonKey based on chosen taxon
-                           scope.$apply(function(){
-			    	 var rank = (scope.queryFormVm.params.rank).toString().toLowerCase()
-				 if (rank == "species") {
-			         	scope.queryFormVm.params.taxonKey = ui['item'][rank+'Key'];
-			         	scope.queryFormVm.params.selectedTaxonomy = ui['item']['scientificName'];
-				 } else {
-			         	scope.queryFormVm.params.taxonKey = ui['item'][rank+'Key'];
-			         	scope.queryFormVm.params.selectedTaxonomy = ui['item'][rank];
-				 }
-                           });                       
-                        },
-                       
-                    });
-                }
-          };
-    }
-	*/
 
 })(angular);

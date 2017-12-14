@@ -8,30 +8,27 @@
     angular.module('map.query')
         .factory('queryService', queryService);
 
-    queryService.$inject = ['$http', '$window', 'queryMap', 'queryResults', 'alerts', '$q'];
-
-    function queryService($http, $window,  queryMap, queryResults, alerts, $q ) {
+    queryService.$inject = [ '$http', '$window', 'queryMap', 'queryResults', 'alerts', 'usSpinnerService', '$q'];
+    var REST_ROOT = "https://www.plantphenology.org/api/";
+   
+    function queryService( $http, $window,  queryMap, queryResults, alerts, usSpinnerService, $q ) {
 
         var queryService = {
             queryJson: queryJson,
             downloadExcel: downloadExcel,
             downloadKml: downloadKml,
-            downloadCsv: downloadCsv,
-            downloadFasta: downloadFasta,
-            downloadFastq: downloadFastq
+            downloadCsv: downloadCsv
         };
 
         return queryService;
 
 	function queryLooper(query,from,size,source) {
-                 //   alerts.removeTmp();
-		//q=year:2012%20AND%20genus:Quercus%20AND%20plantStructurePresenceTypes:"obo:PPO_0002324"
-		//+plantStructurePresenceTypes:"obo:PPO_0002324"=undefined&+genus:Abies=undefined
-	   	//var query = "q=genus:Quercus";
 		    // remove all alerts
-	  		var a = alerts.getAlerts();
-                        for (var i = 0; i < a.length; i++) { alerts.remove(a[i]); }	
-                    var url = "http://www.dev.plantphenology.org/api/_search?from=" + from + "&size=" + size + "&_source=" + encodeURIComponent(source); 
+	  	    var a = alerts.getAlerts();
+                    for (var i = 0; i < a.length; i++) { alerts.remove(a[i]); }	
+
+		    // query endpoint
+                    var url = REST_ROOT + "_search?from=" + from + "&size=" + size + "&_source=" + encodeURIComponent(source); 
 		    alerts.info("Loading results ...");
 		    console.log(url+JSON.stringify(query))
             	    return $http({
@@ -110,36 +107,50 @@
             download("csv", query);
         }
 
-        function downloadFasta(query) {
-            download("fasta", query);
-        }
 
-        function downloadFastq(query) {
-            download("fastq", query);
-        }
-
-        function download(path, query) {
-            return $http({
+	function download (path, query) {
+            usSpinnerService.spin('query-spinner');
+    	    $http({
                 method: 'GET',
-                url: REST_ROOT + "projects/query/" + path,
+		// The PPO download API is accessible by adding download to the api root
+                url: REST_ROOT + "download/?source=latitude,longitude,year,dayOfYear",
                 params: query,
-                keepJson: true
-            })
-                .then(downloadFile)
-                .catch(downloadFileFailed);
-        }
+                keepJson: true,
+        	responseType: 'arraybuffer'
+    	    }).success(function (data, status, headers) {
+            headers = headers();
+ 
+	    // extract filename from content-disposition header (this SHOULD work, however, the
+	    // content disposition header is not being captured by angular-js
+      	    //var result = headers['Content-Disposition'].split(';')[1].trim().split('=')[1];
+      	    //var filename =  result.replace(/"/g, '');
 
-        function downloadFile(response) {
-            if (response.status == 204) {
-                alerts.info("No results found.");
-                return
+	    // here we know to expect a CSV/gzipped file so just name it here
+	    var filename = "ppo_data.csv.gz"
+            var contentType = headers['content-type'];
+ 
+            var linkElement = document.createElement('a');
+            try {
+                var blob = new Blob([data], { type: contentType });
+                var url = window.URL.createObjectURL(blob);
+ 
+                linkElement.setAttribute('href', url);
+                linkElement.setAttribute("download", filename);
+ 
+                var clickEvent = new MouseEvent("click", {
+                    "view": window,
+                    "bubbles": true,
+                    "cancelable": false
+                });
+                linkElement.dispatchEvent(clickEvent);
+                usSpinnerService.stop('query-spinner');
+            } catch (ex) {
+                console.log(ex);
             }
-
-            $window.open(response.data.url);
-        }
-
-        function downloadFileFailed(response) {
-            alerts.info("Failed downloading file!");
+            }).error(function (data) {
+                alerts.info("Failed downloading file!");
+                console.log(data);
+            });
         }
     }
 })();

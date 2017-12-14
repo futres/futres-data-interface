@@ -4,10 +4,13 @@
     angular.module('map.query')
         .controller('QueryController', QueryController);
 
-    QueryController.$inject = ['$scope', 'queryParams', 'queryResults', 'queryMap', 'alerts'];
+    QueryController.$inject = ['$scope', 'queryParams', 'queryResults', 'queryService', 'queryMap', 'alerts'];
 
-    function QueryController($scope, queryParams, queryResults, queryMap, alerts) {
+    function QueryController($scope, queryParams, queryResults, queryService,queryMap, alerts) {
+
+
         var vm = this;
+
         vm.alerts = alerts;
         vm.queryResults = queryResults;
 
@@ -19,6 +22,11 @@
         vm.invalidSize = false;
 
         activate();
+
+	// downloadCSV file
+        vm.downloadCsv = function () {
+            queryService.downloadCsv(queryParams.build())
+        }; 
 
         function activate() {
             queryParams.clear();
