@@ -89,15 +89,20 @@
 
         // An abbreviated list of trist
         vm.traits = {
-          'floral structures present':'obo:PPO_0002324',
-          'fruits present':'obo:PPO_0002342',
-          'vascular leaves present':'obo:PPO_0002312',
-          'cones present':'obo:PPO_0002346',
-          'new above-ground shoot-borne shoot systems present':'obo:PPO_0002302',
-          'new shoot systems emerging from ground present':'obo:PPO_0002303',
-          'abscised leaves present':'obo:PPO_0002357',
-          'abscised fruits or seeds present':'obo:PPO_0002358',
-          'abscised cones or seeds present':'obo:PPO_0002359',
+		'new shoot system present':'obo:PPO_0002301',
+		'unfolded true leaves present':'obo:PPO_0002315',
+		'senescing true leaves present':'obo:PPO_0002616',
+		'abscised leaves present':'obo:PPO_0002357',
+		'floral structures present':'obo:PPO_0002324',
+		'open flowers present':'obo:PPO_0002333',
+		'fruits present':'obo:PPO_0002342',
+		'ripe fruits present':'obo:PPO_0002345',
+		'abscised fruits or seeds present':'obo:PPO_0002358',
+		'pollen cones present':'obo:PPO_0002347',
+		'open pollen cones present':'obo:PPO_0002349',
+		'seed cones present':'obo:PPO_0002351',
+		'ripe seed cones present':'obo:PPO_0002355',
+		'abscised cones or seeds present':'obo:PPO_0002359'
         }
 
 	// Dataserouces we are included
