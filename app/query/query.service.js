@@ -51,7 +51,8 @@
                 	var results = {
                     		size: 0,
                     		totalElements: 0,
-                    		data: []
+                    		data: [],
+				source: ""
                 	};
 
                 	if (response.data) {
@@ -59,6 +60,7 @@
 	             	    results.foundElements = response.data.hits.total;
 
 			    // if the number of elements in result set is larger than the "size" then constrain variables 
+	             	    results.source = dataSource
 			    // accordingly.  Uses ES max record limit of 10,000
                             if (results.foundElements > size) {
                                 alerts.info(results.foundElements +" total matches to query for " + dataSource +". Limiting to " + size + " records for this data source.")
@@ -67,11 +69,12 @@
                             } else {
                     	        results.size = results.foundElements;
 	             	    	results.totalElements = results.foundElements;
+                                if (results.foundElements > 0) 
+                                	alerts.info(results.foundElements + " results found for " + dataSource)
+                                else
+                                  	alerts.info("No results found for " + dataSource)
 			    }
 
-                            if (results.foundElements == 0) {
-                                alerts.info("No results found.")
-                            }
 
 			    // This is where the response data is copied over to the 
 			    // results.data array

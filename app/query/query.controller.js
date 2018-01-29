@@ -25,7 +25,8 @@
 
 	// downloadCSV file
         vm.downloadCsv = function () {
-            queryService.downloadCsv(queryParams.build())
+	    // Call the query for all selected data sets
+            queryService.downloadCsv(queryParams.build(queryParams.source))
         }; 
 
         function activate() {

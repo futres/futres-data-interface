@@ -6,10 +6,10 @@
         Currently, download results are made available only to research partners of the global plant phenology data portal.  
 	We are now working with our data providers to assure all data usage agreements and conditions are met before offering public
 	download.  
-	<p></p>Enter your verification code in the box below in order to enable your download:
         </div>
         <div class="form form-horizontal">
-            <div class="form-group">
+            <div ng-show='verificationStep' class="form-group">
+	        <p></p>&nbsp;&nbsp;&nbsp;&nbsp;Your data contains results from PEP725.  Enter your verification code in the box below in order to enable your download:
                 <div class="col-xs-3">
                         <dlabel class="control-label">Verification Code</label>
                 </div>
@@ -82,20 +82,19 @@
                 </div>
             </div>
 
-	    <!--
             <div class="form-group">
                 <div class="col-xs-3">
                     <label class="control-label">Source</label>
+			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Source")'></i></a> 
                 </div>
                 <div class="col-xs-9">
                     <select ng-options="key as value for (value,key) in queryFormVm.dataSources"
                         ng-model="queryFormVm.params.source"
-                           class="form-control input-sm" multiple>
+                           class="form-control input-sm" multiple required>
                         <option value="">-- Select Source(s) --</option>
                     </select>
                 </div>
             </div>
-	    -->
 
             <div class="form-group">
                 <div class="col-xs-3">

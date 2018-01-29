@@ -78,8 +78,8 @@
 
 		// Adjust bounds
                 if (this._markers.length > 0) {
-		    var bounds = this._clusterLayer.getBounds()
 	            try {			
+		    	var bounds = this._clusterLayer.getBounds()
                     	this._map.fitBounds(bounds);
 	            } catch(err) {
                     	this._map.fitWorld();

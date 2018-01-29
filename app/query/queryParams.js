@@ -59,10 +59,11 @@
            if (params.specificEpithet) {
              builder.add("+specificEpithet:" + params.specificEpithet);
            }
-           if (params.source) {
-             builder.add("+source:" + params.source);
-           }
-           builder.setSource(source);
+//           if (params.source) {
+ //            builder.add("+source:" + params.source);
+  //         }
+	   builder.add("+source:" + source)
+           //builder.setSource(source);
            return builder.build();
        }
 

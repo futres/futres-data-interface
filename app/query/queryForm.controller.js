@@ -8,8 +8,19 @@
      	// toggle download modal dialog
         $scope.downloadModalShown = false;
         $scope.toggleDownloadModal = function() { 
+	    // Before showing the download modal, decide if we should show
+	    // the verification text or not, PEP725 data cannot be downloaded now
+	   if ($scope.hasPEP725Data) {
+	       $scope.verificationStep = true
+	       $scope.downloadButtonShown = false
+	   } else {
+	       $scope.verificationStep = false
+	       $scope.downloadButtonShown = true
+ 	   }
             $scope.downloadModalShown = !$scope.downloadModalShown; 
         };
+
+        $scope.hasPEP725Data = false;
 
         // toggle modal dialog
         $scope.modalShown = false;
@@ -26,6 +37,8 @@
 		"source, visit the <a href='https://github.com/biocodellc/ppo-data-pipeline/blob/master/projects/pep725/phenophase_descriptions.csv' target='_blank'>PEP725</a>, <a href='https://github.com/biocodellc/ppo-data-pipeline/blob/master/projects/npn/phenophase_descriptions.csv' target='_blank'>USA-NPN</a>, or <a href='https://github.com/biocodellc/ppo-data-pipeline/blob/master/projects/neon/phenophase_descriptions.csv' target='_blank'>NEON</a> mapping tables at the <a href='https://github.com/biocodellc/ppo-data-pipeline' target='_blank'>ppo-data-pipeline</a> site.");
 	    } else if (modalType == "Genus") {
             	$scope.modalText = $sce.trustAsHtml("Queries on genus are required in order to help constrain the number of records returned on queries and improve the performance of the interface itself.  Also, we encourage genus level queries over genus + species queries since genus is typically a better metric for comparing phenological patterns across continents, which is the primary purpose of this interface.  The genus list contains only plant genus names that have 3,000 or more observations from source databases.");
+	    } else if (modalType == "Source") {
+            	$scope.modalText = $sce.trustAsHtml("You may select one or more datasources from the list provided. Use the option key (Mac) or control key (Windows) to make your selections. Currently, the PEP725 data cannot be downloaded from this interface.  If you select NEON and/or USA-NPN, or your results do not contain any PEP725 data, then you may freely download data. ");
 	    } else if (modalType == "Year") {
             	$scope.modalText = $sce.trustAsHtml("USA-NPN and NEON data, which constitutes all of the North American data in this portal, appear only after the year 2009, with the exception of the genus <i>Syringa</i> (Lilac).  USA-NPN Lilac data begins in 1956.  PEP725 data constitutes all of our European data, and begins in 1868.");
 	    } else if (modalType == "Day of Year") {
@@ -56,13 +69,19 @@
 
         var vm = this;
 
-        // Handle Download Dialog Events
-        $scope.downloadButtonShown = false;
-        $scope.verify= function () {
+        //Handle Download Dialog Events
+	// If PEP725 is a datasource, must enter a code to continue,
+	// otherwise can show download button
+	//if ($scope.source.includes("PEP725")) {
+            $scope.downloadButtonShown = false;
+            $scope.verify= function () {
                 if (queryParams.verifyDownload == "ppo2017") {
                         $scope.downloadButtonShown = true;
                 }
-        }
+            }
+	//} else {
+        //    $scope.downloadButtonShown = true;
+//	}
 
 	queryParams.fromYear= 1868;
 	queryParams.toYear= 2018;
@@ -107,7 +126,7 @@
 
 	// Dataserouces we are included
  	vm.dataSources = {
-          'National Phenology Network':'NPN',
+          'USA National Phenology Network':'USA-NPN',
           'The European Phenology Database':'PEP725',
           'National Ecological Observatory Network':'NEON'
         };	
@@ -155,16 +174,38 @@
 
 //	}
         function queryJson() {
+            $scope.hasPEP725Data = false;
             if ($scope.queryForm.$invalid) return true;
     	    usSpinnerService.spin('query-spinner');
-
-            queryService.queryJson(queryParams.build(), 0, SOURCE)
-                .then(queryJsonSuccess)
-                .catch(queryJsonFailed)
-                .finally(queryJsonFinally);
+	    var first = true
+	    var last = false 
+	    var count = 0
+	    // loop through selected datasources using the queryParams.source
+	    // element
+	    for (var key in queryParams.source) {
+		// The datasource, e.g. PEP725, NEON, USA-NPN, etc...
+		var dataSource=queryParams.source[key]
+                queryService.queryJson(queryParams.build(dataSource), 0, SOURCE, dataSource)
+                    .then(queryJsonSuccess)
+                    .catch(queryJsonFailed)
+                    .finally(queryJsonFinally);
+	    }
 
             function queryJsonSuccess(data) {
-                queryResults.update(data);
+		// if PEP725 has data then set this flag 
+		if (data.source == "PEP725" && data.size > 0) 
+  	 		$scope.hasPEP725Data = true;
+
+	        count = count + 1	
+		// if this is the first time we update a source, then use update routine
+		if (first) {
+               	    queryResults.update(data);
+		// otherwise append data for all successive calls
+		} else {
+                    queryResults.append(data);
+		}
+		first = false;
+
                 queryMap.setMarkers(queryResults.data);
 		$scope.queryForm.$setPristine(true)
             }
