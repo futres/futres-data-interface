@@ -22,7 +22,8 @@
 
         return queryService;
 
-	function queryLooper(query,from,size,source) {
+	function queryLooper(query,from,size,source, dataSource) {
+//alert(JSON.stringify(query))
 		    // remove all alerts
 	  	    var a = alerts.getAlerts();
                     for (var i = 0; i < a.length; i++) { alerts.remove(a[i]); }	
@@ -60,7 +61,7 @@
 			    // if the number of elements in result set is larger than the "size" then constrain variables 
 			    // accordingly.  Uses ES max record limit of 10,000
                             if (results.foundElements > size) {
-                                alerts.info(results.foundElements +" total matches to query. Returned results limited to " + size)
+                                alerts.info(results.foundElements +" total matches to query for " + dataSource +". Limiting to " + size + " records for this data source.")
                     	        results.size = size
 	             	    	results.totalElements = size
                             } else {
@@ -72,6 +73,8 @@
                                 alerts.info("No results found.")
                             }
 
+			    // This is where the response data is copied over to the 
+			    // results.data array
                             results.data = response.data.hits.hits;
                 	}
 
@@ -82,7 +85,7 @@
 
 	    
 	// Manage the query to provider
-        function queryJson(query, page, source) {
+        function queryJson(query, page, source, dataSource) {
  	        var from = 0;
 	        //var size = 2000;
 	        var size = 10000;
@@ -92,7 +95,7 @@
 		// TODO: write an elasticsearch query client that can fetch more than 10,000 records using "scroll"
 		// for now, am using the "queryLooper" function which was designed to loop through successive queries.
 		// the "scroll" function, howerver, works differently
-                return queryLooper(query, 0, maxRecords, source);
+                return queryLooper(query, 0, maxRecords, source, dataSource);
 	}
 
         function downloadExcel(query) {
