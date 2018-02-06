@@ -126,10 +126,17 @@
 
 	// Dataserouces we are included
  	vm.dataSources = {
-          'USA National Phenology Network':'USA-NPN',
-          'The European Phenology Database':'PEP725',
-          'National Ecological Observatory Network':'NEON'
+          'USA-NPN':'USA National Phenology Network',
+          'PEP725':'Pan European Phenology Database',
+          'NEON':'National Ecological Observatory Network'
         };	
+
+	// Pre-select all dataSources for the source multiple drop-down box
+	var selectedSources = []
+	for (var key in vm.dataSources) 
+		selectedSources.push(key);
+	queryParams.source = selectedSources;
+
           //'Regional North American Herbaria Network':'ASU'
 
 	// An abbreviated list of genus names (selectec by genera with > 3,000 observations amongst data sources

@@ -88,7 +88,8 @@
 			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Source")'></i></a> 
                 </div>
                 <div class="col-xs-9">
-                    <select ng-options="key as value for (value,key) in queryFormVm.dataSources"
+                    <!--<select ng-options="key as value for (value,key) in queryFormVm.dataSources"-->
+                    <select ng-options="key as value for (key,value) in queryFormVm.dataSources"
                         ng-model="queryFormVm.params.source"
                            class="form-control input-sm" multiple required>
                         <option value="">-- Select Source(s) --</option>
