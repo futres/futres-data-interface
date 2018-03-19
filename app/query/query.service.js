@@ -9,7 +9,9 @@
         .factory('queryService', queryService);
 
     queryService.$inject = [ '$http', '$window', 'queryMap', 'queryResults', 'alerts', 'usSpinnerService', '$q'];
-    var REST_ROOT = "https://www.plantphenology.org/api/";
+    //var REST_ROOT = "https://www.plantphenology.org/api/";
+    var REST_ROOT = "http://api.plantphenology.org/v1/query/"
+    var DOWNLOAD_REST_ROOT = "http://api.plantphenology.org/v1/download/"
    
     function queryService( $http, $window,  queryMap, queryResults, alerts, usSpinnerService, $q ) {
 
@@ -119,7 +121,7 @@
     	    $http({
                 method: 'GET',
 		// The PPO download API is accessible by adding download to the api root
-                url: REST_ROOT + "download/?source=latitude,longitude,year,dayOfYear",
+                url: DOWNLOAD_REST_ROOT + "?source=latitude,longitude,year,dayOfYear",
                 params: query,
                 keepJson: true,
         	responseType: 'arraybuffer'
