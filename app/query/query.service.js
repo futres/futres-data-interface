@@ -10,8 +10,11 @@
 
     queryService.$inject = [ '$http', '$window', 'queryMap', 'queryResults', 'alerts', 'usSpinnerService', '$q'];
     //var REST_ROOT = "https://www.plantphenology.org/api/";
-    var REST_ROOT = "http://api.plantphenology.org/v1/query/"
-    var DOWNLOAD_REST_ROOT = "http://api.plantphenology.org/v1/download/"
+    //var REST_ROOT = "http://api.plantphenology.org/v1/query/"
+    //var DOWNLOAD_REST_ROOT = "http://api.plantphenology.org/v1/download/"
+    // temporarily using the old rest service which uses HTTPS and linked to same domain, this makes a difference
+    var REST_ROOT = "https://www.plantphenology.org/api/"
+    var DOWNLOAD_REST_ROOT = "https://www.plantphenology.org/api/download/"
    
     function queryService( $http, $window,  queryMap, queryResults, alerts, usSpinnerService, $q ) {
 
