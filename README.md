@@ -1,5 +1,5 @@
 # About
-A lightweight interface for visualizing global plant phenology that has been indexed using the 
+A lightweight interface for visualizing global plant phenology, currently running at https://www.plantphenology.org/, drawing on data that has been indexed using the 
 [https://github.com/biocodellc/ppo-data-pipeline](ppo-data-pipeline).  This interface is written
 in angularJS, leaflet, and bootstrap and calls data services using the 
 [https://github.com/biocodellc/ppo-data-server](ppo-data-server).
