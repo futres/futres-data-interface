@@ -109,7 +109,8 @@
  	vm.dataSources = {
           'USA-NPN':'USA National Phenology Network',
           'PEP725':'Pan European Phenology Database',
-          'NEON':'National Ecological Observatory Network'
+          'NEON':'National Ecological Observatory Network',
+	  'HERBARIUM':'Herbarium Data Sources'
         };	
 
 	// Pre-select all dataSources for the source multiple drop-down box
