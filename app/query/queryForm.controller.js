@@ -53,7 +53,7 @@
         var vm = this;
         var _currentLayer = undefined;
 
-        var SOURCE = ["latitude", "longitude", "startDayOfYear", "year", "dayOfYear", "genus", "specificEpithet", "source", "eventId"];
+        var SOURCE = ["latitude", "longitude", "startDayOfYear", "year", "dayOfYear", "genus", "specificEpithet", "source", "eventId", "subSource"];
 
         var vm = this;
 
