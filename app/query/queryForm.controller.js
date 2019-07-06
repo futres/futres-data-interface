@@ -68,7 +68,7 @@
         }
 
 	queryParams.fromYear= 1868;
-	queryParams.toYear= 2018;
+	queryParams.toYear= 2019;
 	vm.year = {
 	    options: {
                 floor: queryParams.fromYear,
@@ -110,7 +110,8 @@
           'USA-NPN':'USA National Phenology Network',
           'PEP725':'Pan European Phenology Database',
           'NEON':'National Ecological Observatory Network',
-	  'HERBARIUM':'Herbarium Data Sources'
+	  'HERBARIUM':'Herbarium Data Sources',
+	  'IMAGE_SCORING':'Image Scoring Records from iNaturalist'
         };	
 
 	// Pre-select all dataSources for the source multiple drop-down box
