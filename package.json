@@ -6,19 +6,20 @@
   "repository": "https://github.com/angular/angular-seed",
   "license": "MIT",
   "devDependencies": {
-    "angular-jsdoc": "^1.5.0",
-    "bower": "^1.7.7",
+    "angular-jsdoc": "^1.5.1",
+    "bower": "^1.8.8",
+    "graceful-fs": "^4.2.0",
     "gulp": "^3.9.1",
     "gulp-angular-jsdoc": "^0.1.6",
     "gulp-jsdoc3": "^1.0.1",
     "gulp-minify-css": "^1.2.4",
     "gulp-ngdocs": "^0.3.0",
     "gulp-replace": "^0.6.1",
-    "gulp-uglify": "^3.0.0",
-    "gulp-usemin": "^0.3.28",
-    "http-server": "^0.9.0",
-    "jsdoc": "^3.5.5",
-    "rimraf": "^2.6.1"
+    "gulp-uglify": "^3.0.2",
+    "gulp-usemin": "^0.3.29",
+    "http-server": "^0.11.1",
+    "jsdoc": "^3.6.2",
+    "rimraf": "^2.6.3"
   },
   "scripts": {
     "postinstall": "bower install;npm install -g gulp",
@@ -33,10 +34,14 @@
     "update-webdriver": "webdriver-manager update",
     "preprotractor": "npm run update-webdriver",
     "protractor": "protractor e2e-tests/protractor.conf.js",
-    "update-index-async": "node -e \"var fs=require('fs'),indexFile='app/index-async.html',loaderFile='app/bower_components/angular-loader/angular-loader.min.js',loaderText=fs.readFileSync(loaderFile,'utf-8').split(/sourceMappingURL=angular-loader.min.js.map/).join('sourceMappingURL=bower_components/angular-loader/angular-loader.min.js.map'),indexText=fs.readFileSync(indexFile,'utf-8').split(/\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/).join('//@@NG_LOADER_START@@\\n'+loaderText+'    //@@NG_LOADER_END@@');fs.writeFileSync(indexFile,indexText);\""
+    "update-index-async": "node -e \"var fs=require('fs'),indexFile='app/index-async.html',loaderFile='app/bower_components/angular-loader/angular-loader.min.js',loaderText=fs.readFileSync(loaderFile,'utf-8').split(/sourceMappingURL=angular-loader.min.js.map/).join('sourceMappingURL=bower_components/angular-loader/angular-loader.min.js.map'),indexText=fs.readFileSync(indexFile,'utf-8').split(/\\/\\/@@NG_LOADER_START@@[\\s\\S]*\\/\\/@@NG_LOADER_END@@/).join('//@@NG_LOADER_START@@\\n'+loaderText+'    //@@NG_LOADER_END@@');fs.writeFileSync(indexFile,indexText);\"",
+    "preinstall": "npx npm-force-resolutions"
+  },
+  "resolutions": {
+    "graceful-fs": "4.2.3"
   },
   "dependencies": {
-    "angularjs-slider": "^6.4.1",
-    "gulp-shell": "^0.6.3"
+    "angularjs-slider": "^6.7.0",
+    "gulp-shell": "^0.6.5"
   }
 }
