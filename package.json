@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "description": "A starter project for AngularJS",
-  "repository": "https://github.com/angular/angular-seed",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angular/angular-seed.git"
+  },
   "license": "MIT",
   "devDependencies": {
     "angular-jsdoc": "^1.5.1",
@@ -43,5 +46,11 @@
   "dependencies": {
     "angularjs-slider": "^6.7.0",
     "gulp-shell": "^0.6.5"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/angular/angular-seed/issues"
+  },
+  "homepage": "https://github.com/angular/angular-seed#readme",
+  "main": "gulpfile.js",
+  "author": ""
 }

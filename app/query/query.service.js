@@ -8,15 +8,13 @@
     angular.module('map.query')
         .factory('queryService', queryService);
 
-    queryService.$inject = [ '$http', '$window', 'queryMap', 'queryResults', 'alerts', 'usSpinnerService', '$q'];
-    //var REST_ROOT = "https://www.plantphenology.org/api/";
-    //var REST_ROOT = "http://api.plantphenology.org/v1/query/"
-    //var DOWNLOAD_REST_ROOT = "http://api.plantphenology.org/v1/download/"
+    queryService.$inject = [ '$http', '$window', 'queryMap', 'queryResults', 'usSpinnerService', '$q'];
+    
     // temporarily using the old rest service which uses HTTPS and linked to same domain, this makes a difference
-    var REST_ROOT = "https://www.plantphenology.org/api/v1/query/"
-    var DOWNLOAD_REST_ROOT = "https://www.plantphenology.org/api/v2/download/"
+    var REST_ROOT = "https://www.plantphenology.org/futresapi/v1/query/"
+    var DOWNLOAD_REST_ROOT = "https://www.plantphenology.org/futresapi/v2/download/"
    
-    function queryService( $http, $window,  queryMap, queryResults, alerts, usSpinnerService, $q ) {
+    function queryService( $http, $window,  queryMap, queryResults, usSpinnerService, $q ) {
 
         var queryService = {
             queryJson: queryJson,
@@ -27,37 +25,25 @@
 
         return queryService;
 
-	function queryLooper(query,from,size,source, dataSource) {
-//alert(JSON.stringify(query))
-		    // remove all alerts
-	  	    var a = alerts.getAlerts();
-                    for (var i = 0; i < a.length; i++) { alerts.remove(a[i]); }	
-
+	function queryLooper(query,from,size) {
 		    // query endpoint
-                    var url = REST_ROOT + "_search?from=" + from + "&size=" + size + "&_source=" + encodeURIComponent(source); 
-		    alerts.info("Loading results ...");
+            var url = REST_ROOT + "_search?from=" + from + "&size=" + size; 
+		    console.log("Loading results ...");
 		    console.log(url+JSON.stringify(query))
-            	    return $http({
-                	method: 'GET',
-                	url: url,
-                	params: query,
-                	keepJson: true
-            	     }).then(queryJsonComplete);
+            return $http({
+                method: 'GET',
+                url: url,
+                params: query,
+                keepJson: true
+            }).then(queryJsonComplete);
 
- 	           function queryJsonComplete(response) {
-			// Removing the loading alert
-                        var a = alerts.getAlerts();
-         		for (var i = 0; i < a.length; i++) {
-                       	     if (a[i].msg === 'Loading results ...') {
-                                  alerts.remove(a[i]);
-                             }
-                        }
+ 	        function queryJsonComplete(response) {		
 			// Initialize the results array
                 	var results = {
                     		size: 0,
                     		totalElements: 0,
                     		data: [],
-				source: ""
+				            source: ""
                 	};
 
                 	if (response.data) {
@@ -65,19 +51,18 @@
 	             	    results.foundElements = response.data.hits.total;
 
 			    // if the number of elements in result set is larger than the "size" then constrain variables 
-	             	    results.source = dataSource
 			    // accordingly.  Uses ES max record limit of 10,000
                             if (results.foundElements > size) {
-                                alerts.info(results.foundElements +" total matches to query for " + dataSource +". Limiting to " + size + " records for this data source.")
+                                console.log(results.foundElements +" total matches to query. Limiting to " + size + " records.")
                     	        results.size = size
 	             	    	results.totalElements = size
                             } else {
                     	        results.size = results.foundElements;
 	             	    	results.totalElements = results.foundElements;
                                 if (results.foundElements > 0) 
-                                	alerts.info(results.foundElements + " results found for " + dataSource)
+                                	console.log(results.foundElements + " results found")
                                 else
-                                  	alerts.info("No results found for " + dataSource)
+                                  	console.log("No results found")
 			    }
 
 
@@ -93,7 +78,7 @@
 
 	    
 	// Manage the query to provider
-        function queryJson(query, page, source, dataSource) {
+        function queryJson(query, page) {
  	        var from = 0;
 	        //var size = 2000;
 	        var size = 10000;
@@ -103,7 +88,7 @@
 		// TODO: write an elasticsearch query client that can fetch more than 10,000 records using "scroll"
 		// for now, am using the "queryLooper" function which was designed to loop through successive queries.
 		// the "scroll" function, howerver, works differently
-                return queryLooper(query, 0, maxRecords, source, dataSource);
+                return queryLooper(query, 0, maxRecords);
 	}
 
         function downloadExcel(query) {
@@ -124,7 +109,7 @@
     	    $http({
                 method: 'GET',
 		// The PPO download API is accessible by adding download to the api root
-                url: DOWNLOAD_REST_ROOT + "?source=latitude,longitude,year,dayOfYear",
+                url: DOWNLOAD_REST_ROOT + "?source=latitude,longitude,yearCollected",
                 params: query,
                 keepJson: true,
         	responseType: 'arraybuffer'
@@ -159,7 +144,7 @@
                 console.log(ex);
             }
             }).error(function (data) {
-                alerts.info("Failed downloading file!");
+                console.log("Failed downloading file!");
                 console.log(data);
             });
         }

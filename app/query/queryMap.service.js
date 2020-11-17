@@ -25,12 +25,9 @@
         return new QueryMap('latitude', 'longitude');
 
 	function generatePopupContent(resource) {
-            return "<strong>Genus</strong>:  " + resource._source.genus + "<br>" +
-                "<strong>Species</strong>:  " + resource._source.specificEpithet+ "<br>" +
+            return "<strong>ScientificName</strong>:  " + resource._source.scientificName + "<br>" +
                 "<strong>Year</strong>:  " + resource._source.year + "<br>" +
-                "<strong>DayOfYear</strong>:  " + resource._source.dayOfYear+ "<br>" +
-                "<strong>Source</strong>:  " + resource._source.source + "<br>" +
-                "<strong>subSource</strong>:  " + resource._source.subSource + "<br>";
+                "<strong>Source</strong>:  " + resource._source.source + "<br>";
         }
     }
 })();

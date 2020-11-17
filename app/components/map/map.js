@@ -35,14 +35,16 @@
                 var z = this._map.getBoundsZoom([[90, -180], [-90, 180]], true);
                 this._map.setZoom(z);
 
-                this._mapTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token={access_token}',
-                    {access_token: MAPBOX_TOKEN});
+                // TODO: replace this with a new style
+                //this._mapTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.outdoors-v11/{z}/{x}/{y}.png?access_token={access_token}',
+                //    {access_token: MAPBOX_TOKEN});
 
-                this._mapTiles.addTo(this._map);
+                //this._mapTiles.addTo(this._map);
 
                 this._satelliteTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token={access_token}',
                     {access_token: MAPBOX_TOKEN});
 
+                this._satelliteTiles.addTo(this._map);
                 this._clusterLayer = L.markerClusterGroup({chunkedLoading: true, maxClusterRadius: 40});
             },
 
@@ -73,8 +75,8 @@
 
                 this._map
                     .addLayer(this._clusterLayer)
-                    .setMinZoom(1)
-                    .spin(false);
+                    .setMinZoom(1);
+                    //.spin(false);
 
 		// Adjust bounds
                 if (this._markers.length > 0) {
@@ -107,10 +109,10 @@
                 this._map.addLayer(this._satelliteTiles);
             },
 
-            mapView: function () {
-                this._map.removeLayer(this._satelliteTiles);
-                this._map.addLayer(this._mapTiles);
-            },
+            //mapView: function () {
+            //    this._map.removeLayer(this._satelliteTiles);
+            //    this._map.addLayer(this._mapTiles);
+            //},
 
             drawBounds: function (createCallback) {
                 new L.Draw.Rectangle(this._map, {}).enable();
