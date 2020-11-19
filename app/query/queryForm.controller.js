@@ -27,14 +27,13 @@
         $scope.toggleModal = function(modalType) { 
 	    $scope.modalType = modalType
 	    if (modalType == "Traits") {
-		$scope.modalText= $sce.trustAsHtml(
-            	"The traits listed here are derived from the Futres Ontology for Vertebrate Traits (FOVT).");
+			$scope.modalText= $sce.trustAsHtml("The traits listed here are derived from the Futres Ontology for Vertebrate Traits (FOVT).");
 	    } else if (modalType == "ScientificName") {
-            	$scope.modalText = $sce.trustAsHtml("Queries on ScientificName are required in order to help constrain the number of records returned on queries ");	   
+            	$scope.modalText = $sce.trustAsHtml("Current browsers will enable autocompletion of scientific names when you begin to type. The list of scientific names here are drawn from the list of names that have been identified from source datasets.");	   
 	    } else if (modalType == "Source") {
-            	$scope.modalText = $sce.trustAsHtml("Data Sources are from VertNet as well as Projects that have been loaded into GEOME.");
+            	$scope.modalText = $sce.trustAsHtml("Data Sources include those from VertNet and GEOME.  GEOME datasets only include those that have been made publically available.");
 	    } else if (modalType == "Year") {
-            	$scope.modalText = $sce.trustAsHtml("Optionally specify a set of years.");
+            	$scope.modalText = $sce.trustAsHtml("Year designates the year that the specimen was collected.");
 	    }
 
 	    $scope.modalShown = !$scope.modalShown; 
@@ -43,7 +42,7 @@
         var vm = this;
         var _currentLayer = undefined;
 
-        var SOURCE = ["latitude", "longitude", "yearCollected", "scientificName", "measurementType"];
+        var SOURCE = ["decimalLatitude", "decimalLongitude", "yearCollected", "scientificName", "measurementType"];
 
         var vm = this;
 
@@ -94,12 +93,15 @@
 		   var newObj = {}
 		   dataObj.forEach(function(obj) {
 			   if (obj.public == "True") { 
-					   newObj[obj.projectId] = obj.projectTitle
+					// projectId 232 is sample project
+					if (obj.projectId != 232)   					
+						newObj[obj.projectId] = obj.projectTitle
 			   }
 		   });	
 		   vm.dataSources = newObj
 		   var selectedSources = []
 			for (var key in vm.dataSources) 
+
 				selectedSources.push(key);
 			queryParams.source = selectedSources;
 	   }, 

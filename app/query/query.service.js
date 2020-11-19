@@ -8,13 +8,13 @@
     angular.module('map.query')
         .factory('queryService', queryService);
 
-    queryService.$inject = [ '$http', '$window', 'queryMap', 'queryResults', 'usSpinnerService', '$q'];
+    queryService.$inject = [ '$http', '$window', 'queryMap', 'queryResults', 'alerts', 'usSpinnerService', '$q'];
     
     // temporarily using the old rest service which uses HTTPS and linked to same domain, this makes a difference
     var REST_ROOT = "https://www.plantphenology.org/futresapi/v1/query/"
     var DOWNLOAD_REST_ROOT = "https://www.plantphenology.org/futresapi/v2/download/"
    
-    function queryService( $http, $window,  queryMap, queryResults, usSpinnerService, $q ) {
+    function queryService( $http, $window,  queryMap, queryResults, alerts, usSpinnerService, $q ) {
 
         var queryService = {
             queryJson: queryJson,
@@ -26,7 +26,11 @@
         return queryService;
 
 	function queryLooper(query,from,size) {
-		    // query endpoint
+        // remove all alerts
+        var a = alerts.getAlerts();
+        for (var i = 0; i < a.length; i++) { alerts.remove(a[i]); }	
+
+        // query endpoint
             var url = REST_ROOT + "_search?from=" + from + "&size=" + size; 
 		    console.log("Loading results ...");
 		    console.log(url+JSON.stringify(query))
@@ -53,16 +57,16 @@
 			    // if the number of elements in result set is larger than the "size" then constrain variables 
 			    // accordingly.  Uses ES max record limit of 10,000
                             if (results.foundElements > size) {
-                                console.log(results.foundElements +" total matches to query. Limiting to " + size + " records.")
+                                alerts.info(results.foundElements +" total matches to query. Limiting web results to " + size + " records.  Choose download to get a complete set of results.")
                     	        results.size = size
-	             	    	results.totalElements = size
+	             	    	    results.totalElements = size
                             } else {
                     	        results.size = results.foundElements;
-	             	    	results.totalElements = results.foundElements;
-                                if (results.foundElements > 0) 
-                                	console.log(results.foundElements + " results found")
-                                else
-                                  	console.log("No results found")
+	             	    	    results.totalElements = results.foundElements;
+                            if (results.foundElements > 0) 
+                                alerts.info(results.foundElements + " results found")
+                            else
+                                alerts.info("No results found")
 			    }
 
 
@@ -81,9 +85,9 @@
         function queryJson(query, page) {
  	        var from = 0;
 	        //var size = 2000;
-	        var size = 10000;
+	        var size = 1000;
 	        //var maxRecords = 10000;
-	        var maxRecords = 10000;
+	        var maxRecords = 1000   ;
 		
 		// TODO: write an elasticsearch query client that can fetch more than 10,000 records using "scroll"
 		// for now, am using the "queryLooper" function which was designed to loop through successive queries.

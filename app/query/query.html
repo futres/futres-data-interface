@@ -14,7 +14,7 @@
     <div class="actions clearfix">
         <!-- query view toggle -->
 	<!--<img src='futresLogo.jpg' height='40px'>-->
-	<label style="font-size: 24px; color: #cc8e35; font-style: normal;">FuTRES Traits Data Portal</label>
+	<label style="font-size: 24px; color: #cc8e35; font-style: normal;">FuTRES - Vertebrate Traits Data Portal</label>
         <div class="btn-group btn-group-sm pull-right query-view-toggle">
             <button type="button" ng-click="vm.showMap = true" ng-class="{'disabled': vm.showMap}"
                     class="btn btn-default">Map
@@ -22,6 +22,9 @@
             <button type="button" ng-click="vm.showMap = false" ng-class="{'disabled': !vm.showMap}"
                     class="btn btn-default">Table
             </button>
+            <!--<button type="button" ng-click="" 
+                    class="btn btn-default">Browse
+            </button>-->
         </div>
 
         <!-- download menu -->
@@ -36,7 +39,7 @@
 </div>
 
 
-<div class="query-page fill-screen">
+<div class="query-page fill-screen" >
     <!-- sidebar-->
     <div ng-show="vm.showSidebar" ng-include="'query/queryForm.html'" class="sidebar"></div>
 
@@ -49,7 +52,7 @@
     </div>
 
     <!-- main content-->
-    <div class="query-content">
+    <div class="query-content" >
 
         <div class="center-spinner" us-spinner="" spinner-key="query-spinner"></div>
 

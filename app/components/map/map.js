@@ -25,26 +25,27 @@
              */
             init: function (mapId) {
                 this._map = L.map(mapId, {
-                    center: [0, 0],
-                    zoom: 1,
+                    center: [40, -80],
+                    zoom: 2,
                     closePopupOnClick: false,
                     maxBoundsViscocity: .5
                 });
 
                 // fill screen with map, roughly 360 degrees of longitude
-                var z = this._map.getBoundsZoom([[90, -180], [-90, 180]], true);
-                this._map.setZoom(z);
+                //var z = this._map.getBoundsZoom([[0, -140], [70, -80]], true);
+                this._map.setZoom(4);
 
                 // TODO: replace this with a new style
                 //this._mapTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.outdoors-v11/{z}/{x}/{y}.png?access_token={access_token}',
                 //    {access_token: MAPBOX_TOKEN});
 
                 //this._mapTiles.addTo(this._map);
-
+                this._esriTopoTiles = L.tileLayer.wms('http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { layers: 0 });
+                
                 this._satelliteTiles = L.tileLayer('https://api.mapbox.com/v4/mapbox.satellite/{z}/{x}/{y}.png?access_token={access_token}',
                     {access_token: MAPBOX_TOKEN});
 
-                this._satelliteTiles.addTo(this._map);
+                this._esriTopoTiles.addTo(this._map);
                 this._clusterLayer = L.markerClusterGroup({chunkedLoading: true, maxClusterRadius: 40});
             },
 
@@ -59,16 +60,20 @@
 
                 var _this = this;
                 angular.forEach(data, function (resource) {
-                    var lat = resource._source[_this.latColumn];
-                    var lng = resource._source[_this.lngColumn];
+                    try {
+                        var lat = resource._source[_this.latColumn];
+                        var lng = resource._source[_this.lngColumn];
 
-                    var marker = L.marker([lat, lng]);
+                        var marker = L.marker([lat, lng]);
 
-                    if (typeof popupContentCallback === 'function') {
-                        marker.bindPopup(popupContentCallback(resource));
+                        if (typeof popupContentCallback === 'function') {
+                            marker.bindPopup(popupContentCallback(resource));
+                        }
+                        
+                        _this._markers.push(marker);
+                    } catch(err) {
+                        console.log('bad latlng, no marker made')
                     }
-
-                    _this._markers.push(marker);
                 });
 
                 this._clusterLayer.addLayers(this._markers);
@@ -105,15 +110,15 @@
             },
 
             satelliteView: function () {
-                this._map.removeLayer(this._mapTiles);
+                this._map.removeLayer(this._esriTopoTiles);
                 this._map.addLayer(this._satelliteTiles);
             },
 
-            //mapView: function () {
-            //    this._map.removeLayer(this._satelliteTiles);
-            //    this._map.addLayer(this._mapTiles);
-            //},
-
+            esriTopoView: function () {
+                this._map.removeLayer(this._satelliteTiles);
+                this._map.addLayer(this._esriTopoTiles);
+                this._base = this._esriTopoTiles;
+            },
             drawBounds: function (createCallback) {
                 new L.Draw.Rectangle(this._map, {}).enable();
 

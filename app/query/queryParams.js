@@ -45,10 +45,9 @@
            if (params.scientificName) {
              builder.add("+scientificName:" + params.scientificName);
            }
-           angular.forEach(params.soure, function (t) {
-              builder.add("+projectId:\"" + params.source + "\"");
-           });
-           
+           if (params.source) {
+              builder.add("+projectId:" + params.source);
+           }           
            return builder.build();
         }
     

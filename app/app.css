@@ -39,6 +39,7 @@
 .query-page {
     flex: 1;
     display: flex;
+    height: 90%;
 }
 
 .query-bar {
@@ -66,7 +67,7 @@
 
 .query-bar .alerts .alert-info {
     #border-color: #DBBE62;
-    #background-color: rgba(243, 212, 106, 0.9);
+    #background-color: rgba(243, 212, 0, 0.9);
     border-color: #000000;
 }
 
@@ -172,6 +173,8 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    height: 100%;
+    overflow: auto;
 }
 
 .angular-leaflet-map {

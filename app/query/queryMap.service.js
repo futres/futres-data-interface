@@ -22,12 +22,19 @@
             Map.prototype.addMarkers.call(this, data, generatePopupContent, zoomTo);
         };
 
-        return new QueryMap('latitude', 'longitude');
+        return new QueryMap('decimalLatitude', 'decimalLongitude');
 
 	function generatePopupContent(resource) {
-            return "<strong>ScientificName</strong>:  " + resource._source.scientificName + "<br>" +
-                "<strong>Year</strong>:  " + resource._source.year + "<br>" +
-                "<strong>Source</strong>:  " + resource._source.source + "<br>";
+        var source = ""
+        if (resource._source.projectId == "Vertnet") {
+           source = "Vertnet" 
+        } else {
+            source = "<a href='https://geome-db.org/workbench/project-overview?projectId=" + resource._source.projectId +"' target='_blank'>GEOME</a>";
+        }
+            return "<strong>Scientific Name</strong>:  " + resource._source.scientificName + "<br>" +
+                "<strong>Year Collected</strong>:  " + resource._source.yearCollected + "<br>" +
+                "<strong>Trait</strong>:  " + resource._source.measurementType + "<br>" +
+                "<strong>Source</strong>:  " + source + "<br>";
         }
     }
 })();

@@ -2,35 +2,20 @@
 
     <modal-dialog show='downloadModalShown' dialog-title='Download Results' height='300px' width='70%'>
         <div>
-	<p>The download feature allows users to obtain all results of queries in an archive containing data as comma-separated values, citation information for each
-	dataset, and a README containing information about the query.
-        Currently, PEP725 download results are made available only to research partners of the FuTRES traits data portal so if your result set contains
-	PEP725 data you will be asked to provide an access key below.  For all data downloads, please see the citation and data usage file in the download bundle.
+	        <p>The download feature allows users to obtain all results of queries in an archive containing data as comma-separated values, citation information for each
+	        dataset, and a README containing information about the query.  For all data downloads, please see the citation and data usage file in the download bundle.
         </div>
-        <div class="form form-horizontal">
-            <div ng-show='verificationStep' class="form-group">
-	        <p></p>&nbsp;&nbsp;&nbsp;&nbsp;Your data contains results from PEP725.  Enter your verification code in the box below in order to enable your download:
-                <div class="col-xs-3">
-                        <dlabel class="control-label">Verification Code</label>
-                </div>
-                <div class="col-xs-3">
-                        <input ng-model="queryFormVm.params.verifyDownload" type="text" class="form-control input-sm"/>
-                </div>
-                <div class="col-xs-3">
-                        <button type="button" class="btn btn-primary" ng-show='true' ng-click="verify()">Verify</span></button>
-                </div>
-	    </div>
-            <div ng-show='downloadButtonShown' class="form-group">
+
+        <div ng-show='downloadButtonShown' class="form-group">
                 <div class="col-xs-3">
                     <button type="button" class="btn btn-primary" ng-click="vm.downloadCsv()">Download</span></button>
                 </div>
                 <div class="col-xs-9">
     	        	<label class="hidden-xs information-text">
-				Press download button to commence download.  Downloaded file may take up to 1 minute to process.  Larger numbers of results take longer to process.
-			</label>
+				    Press download button to commence download.  Downloaded file may take up to 1 minute to process.  Larger numbers of results take longer to process.
+			        </label>
                 </div>
-	    </div>
-        </div>
+	    </div>        
     </modal-dialog>
 
     <!-- format for help documentation for each field -->
@@ -42,47 +27,34 @@
         <div class="form form-horizontal">
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label" >Traits</label>
-  			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Traits")'></i></a> 
+                    <label class="control-label" >Trait</label>
+  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Traits")'></i></a> 
                 </div>
 
-		<div class="col-xs-9">
-                    <select ng-options="key as value for (value,key) in queryFormVm.traits"
+		        <div class="col-xs-9">
+                    <select 
+                        ng-options="key as value for (value,key) in queryFormVm.traits"
                         ng-model="queryFormVm.params.traits"
-                           class="form-control input-sm" required >
+                           class="form-control input-sm" >
                         <option value="">-- Select Trait --</option>
                     </select>
+               
                 </div>	
-                                <!--repeat="trait.value as (key, trait) in queryFormVm.traits | filter: {'key': $select.search} "-->
             </div>
-
-
-
+    
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">ScientificName</label>
-  			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("ScientificName")'></i></a> 
+                    <label class="control-label">Name</label>
+  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("ScientificName")'></i></a> 
                 </div>
                 <div class="col-xs-9">
-                    <select ng-options="s for s in queryFormVm.scientificName"
-                        ng-model="queryFormVm.params.scientificName"
-                           class="form-control input-sm" required>
-                        <option value="">-- Select Scientific Name --</option>
-                    </select>
-                </div>
+                    <input class="form-control input-sm" ng-model="queryFormVm.params.scientificName" list="_names" placeholder="--Select ScientificName--" name="scientificName" id="scientificName">
+                    <datalist id="_names"> 
+                        <option ng-repeat="value in queryFormVm.scientificName" value="{{value}}" />                                        
+                    </datalist>
+                </div>                                                                                     
             </div>
-
-            <!--<div class="form-group">
-                <div class="col-xs-3">
-                    <label class="control-label">Species</label>
-  			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Species")'></i></a> 
-                </div>
-                <div class="col-xs-9">
-                    <input ng-model="queryFormVm.params.specificEpithet" type="text"
-                           class="form-control input-sm"/>
-                </div>
-            </div>
-        -->
+            
 
             <div class="form-group">
                 <div class="col-xs-3">
@@ -90,11 +62,9 @@
 			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Source")'></i></a> 
                 </div>
                 <div class="col-xs-9">
-                    <!--<select ng-options="key as value for (value,key) in queryFormVm.dataSources"-->
                     <select ng-options="key as value for (key,value) in queryFormVm.dataSources"
                         ng-model="queryFormVm.params.source"
-                           class="form-control input-sm" multiple required>
-                        <option value="">-- Select Source(s) --</option>
+                           class="form-control input-sm" multiple>
                     </select>
                 </div>
             </div>
@@ -110,18 +80,6 @@
           		rz-slider-options="queryFormVm.year.options"></rzslider>	
                 </div>
             </div>
-            <!--<div class="form-group">
-                <div class="col-xs-3">
-                    <label class="control-label">Day of Year</label>
-  			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Day of Year")'></i></a> 
-                </div>
-                <div class="col-xs-9">
-		    <rzslider class="custom-slider" rz-slider-model="queryFormVm.params.fromDay"
-          		rz-slider-high="queryFormVm.params.toDay"
-          		rz-slider-options="queryFormVm.day.options"></rzslider>	
-                </div>
-            </div>
-        -->
 
         </div>
         <div class="form-group">
@@ -132,13 +90,11 @@
 
 </div>
         <div class="form-group">
-			
-            <!--<div class="col-xs-12">
-	        <label class="label-warning">THIS SITE IS IN DEVELOPMENT!</label>
-            </div>-->
+			            
             <div class="col-xs-12" >
     	        <label class="hidden-xs information-text" >
-            Data on vertebrate traits is made accessible here based on inputs from 
+            Queries are currently limited to 1000 records.        
+            To retrieve a complete set of results, use the Download feature. Data on vertebrate traits is made accessible here based on inputs from 
             <a href='http://vertnet.org/' target='_blank'>Vertnet</a> and individual projects loaded
             through
             <a href='http://www.geome-db.org/' target='_blank'>GEOME</a>.

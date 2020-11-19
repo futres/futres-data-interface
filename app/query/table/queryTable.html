@@ -5,7 +5,7 @@
 
     <div ng-show="queryTableVm.queryResults.isSet">
 
-        <table class="table table-condensed table-striped table-hover text-nowrap">
+        <table class="table table-condensed table-striped table-hover text-nowrap table-bordered" fixed-header>
             <thead>
                 <tr class="text-capitalize">
                     <th sly-repeat="column in queryTableVm.tableColumns">{{ column }}</th>
