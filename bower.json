@@ -22,8 +22,8 @@
     "angular-bootstrap": "^2.5.0",
     "angularjs-slider": "^6.4.1",
     "ngModal": "^1.2.2"
+  },
+  "resolutions": {
+    "angular": "~1.5.x"
   }
-},
-"resolutions": {
-  "angular": "~1.5.x"
 }
