@@ -44,7 +44,49 @@
     
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Name</label>
+                    <label class="control-label">Unit</label>
+  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("measurementUnit")'></i></a> 
+                </div>
+                <div class="col-xs-9">
+                    <input class="form-control input-sm" ng-model="queryFormVm.params.measurementUnit" list="_measurementUnit" placeholder="--Select Unit--" name="measurementUnit" id="measurementUnit">
+                    <datalist id="_measurementUnit"> 
+                        <option ng-repeat="value in queryFormVm.measurementUnit" value="{{value}}" />                                        
+                    </datalist>
+                </div>                                                                                     
+            </div>
+            <div class="form-group">
+                <div class="col-xs-3">
+                    <label class="control-label">Value</label>
+  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("maxValue")'></i></a> 
+                </div>
+                <div class="col-xs-3">
+                    <input class="form-control input-sm" ng-model="queryFormVm.params.minValue" name="minValue" id="minValue">                    
+                </div> 
+                <div class="col-xs-1">
+                    to
+                </div>
+                <div class="col-xs-3">
+                    <input class="form-control input-sm" ng-model="queryFormVm.params.maxValue" name="maxValue" id="maxValue">                    
+                </div>                                                                                    
+            </div>
+
+            <div class="form-group">
+                <div class="col-xs-3">
+                    <label class="control-label">Genus</label>
+  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("genus")'></i></a> 
+                </div>
+                <div class="col-xs-9">
+                    <input class="form-control input-sm" ng-model="queryFormVm.params.genus" list="_genus" placeholder="--Select Genus--" name="genus" id="genus">
+                    <datalist id="_genus"> 
+                        <option ng-repeat="value in queryFormVm.genus" value="{{value}}" />                                        
+                    </datalist>
+                </div>                                                                                     
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-xs-3">
+                    <label class="control-label">ScientificName</label>
   			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("ScientificName")'></i></a> 
                 </div>
                 <div class="col-xs-9">

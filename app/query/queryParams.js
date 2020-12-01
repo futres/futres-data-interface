@@ -41,9 +41,21 @@
            }
            if (params.toYear) {
                builder.add("+yearCollected:<=" + params.toYear);
-           }      
+           }  
+           if (params.minValue) {
+                builder.add("+measurementValue:>=" + params.minValue);
+           }    
+           if (params.maxValue) {
+                builder.add("+measurementValue:<=" + params.maxValue);
+           }    
            if (params.scientificName) {
-             builder.add("+scientificName:" + params.scientificName);
+               builder.add("+scientificName:" + params.scientificName);
+           }
+           if (params.genus) {
+               builder.add("+genus:" + params.genus);
+           }
+           if (params.measurementUnit) {
+               builder.add("+measurementUnit:" + params.measurementUnit);
            }
            if (params.source) {
               builder.add("+projectId:" + params.source);
