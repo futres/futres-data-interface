@@ -114,14 +114,18 @@
 
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Year</label>
-  			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Year")'></i></a> 
+                    <label class="control-label">Value</label>
+  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Year")'></i></a> 
                 </div>
-                <div class="col-xs-9">
-		    <rzslider class="custom-slider" rz-slider-model="queryFormVm.params.fromYear"
-          		rz-slider-high="queryFormVm.params.toYear"
-          		rz-slider-options="queryFormVm.year.options"></rzslider>	
+                <div class="col-xs-3">
+                    <input class="form-control input-sm" ng-model="queryFormVm.params.fromYear" name="fromYear" id="fromYear">                    
+                </div> 
+                <div class="col-xs-1">
+                    to
                 </div>
+                <div class="col-xs-3">
+                    <input class="form-control input-sm" ng-model="queryFormVm.params.toYear" name="toYear" id="toYear">                    
+                </div>                                                                                    
             </div>
 
         </div>
