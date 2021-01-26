@@ -34,7 +34,7 @@
            var builder = new QueryBuilder();
 
            if (params.traits) {
-               builder.add("+measurementType:\"" + params.traits+"\"");
+               builder.add("+traits:\"" + params.traits+"\"");
            }
            if (params.fromYear) {
                builder.add("+yearCollected:>=" + params.fromYear);
@@ -57,11 +57,31 @@
            if (params.measurementUnit) {
                builder.add("+measurementUnit:" + params.measurementUnit);
            }
-           if (params.source) {
-              builder.add("+projectId:" + params.source);
-           }           
+           /*
+           // i think that source parameter should be built as a json object instead of 
+           // single line
+           if (params.source) {                
+                //(projectID:277+or+or+projectID:278+or+projectID:Vertnet)
+                var i;
+                var projectString = "("
+                //builder.add("(")
+                for (i = 0; i < params.source.length; i++) {
+                    if (i > 0) {
+                        projectString += "+or+"
+                        //builder.add("+or+")
+                    }
+                    //builder.add("")
+                    projectString += "projectID:" + params.source[i]
+                    
+                }
+                projectString += ")"
+                builder.add(projectString)
+              //builder.add("+projectID:" + params.source);
+           } 
+           */          
            return builder.build();
         }
+        
     
        function clear() {
            angular.extend(params, defaultParams);

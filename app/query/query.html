@@ -63,11 +63,11 @@
         <div class="center-spinner" us-spinner="" spinner-key="query-spinner"></div>
 
         <!-- map -->
-        <leaflet-map ng-show="vm.showMap" map="vm.queryMap" invalidate-size="vm.invalidSize" class="angular-leaflet-map"></leaflet-map>
+        <leaflet-map ng-show="!vm.showMap" map="vm.queryMap" invalidate-size="vm.invalidSize" class="angular-leaflet-map"></leaflet-map>
 
 
         <!-- table -->
-        <div ng-show="!vm.showMap" class="query-table" ng-class="{'full-page-query-table': !vm.showSidebar}"
+        <div ng-show="vm.showMap" class="query-table" ng-class="{'full-page-query-table': !vm.showSidebar}"
              ng-include="'query/table/queryTable.html'"></div>
 
     </div>

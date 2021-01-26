@@ -9,10 +9,10 @@
     function QueryTableController($scope, queryResults) {
         var vm = this;
         vm.queryResults = queryResults;
-        vm.tableColumns = ["scientificName", "yearCollected", "decimalLatitude", "decimalLongitude", "projectId", "measurementType", "measurementUnit","measurementValue"];
+        vm.tableColumns = [  "scientificName", "measurementType", "measurementUnit","measurementValue", "yearCollected", "projectID"];
         vm.tableData = [];
         vm.currentPage = 1;
-        vm.pageSize = 50;
+        vm.pageSize = 20;
         vm.updatePage = updatePage;
 
         function updatePage() {

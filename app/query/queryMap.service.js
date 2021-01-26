@@ -26,7 +26,7 @@
 
 	function generatePopupContent(resource) {
         var source = ""
-        if (resource._source.projectId == "Vertnet") {
+        if (resource._source.projectID == "Vertnet") {
            source = "Vertnet" 
         } else {
             source = "<a href='https://geome-db.org/workbench/project-overview?projectId=" + resource._source.projectId +"' target='_blank'>GEOME</a>";

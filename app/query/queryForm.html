@@ -27,8 +27,7 @@
         <div class="form form-horizontal">
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label" >Trait</label>
-  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Traits")'></i></a> 
+                    <label class="control-label" ng-click='toggleModal("Traits")' ng-click='toggleModal("Traits")'>Measurement</label>
                 </div>
 
 		        <div class="col-xs-9">
@@ -57,8 +56,7 @@
 	    -->
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Value</label>
-  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("maxValue")'></i></a> 
+                    <label class="control-label" ng-click='toggleModal("maxValue")'>Value</label>
                 </div>
                 <div class="col-xs-3">
                     <input class="form-control input-sm" ng-model="queryFormVm.params.minValue" name="minValue" id="minValue">                    
@@ -73,8 +71,7 @@
 
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Genus</label>
-  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("genus")'></i></a> 
+                    <label class="control-label" ng-click='toggleModal("genus")'>Genus</label>
                 </div>
                 <div class="col-xs-9">
                     <input class="form-control input-sm" ng-model="queryFormVm.params.genus" list="_genus" placeholder="--Select Genus--" name="genus" id="genus">
@@ -87,8 +84,7 @@
 
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">ScientificName</label>
-  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("ScientificName")'></i></a> 
+                    <label class="control-label" ng-click='toggleModal("ScientificName")'>ScientificName</label>
                 </div>
                 <div class="col-xs-9">
                     <input class="form-control input-sm" ng-model="queryFormVm.params.scientificName" list="_names" placeholder="--Select ScientificName--" name="scientificName" id="scientificName">
@@ -99,10 +95,9 @@
             </div>
             
 
-            <div class="form-group">
+            <!--<div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Source</label>
-			<a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Source")'></i></a> 
+                    <label class="control-label" ng-click='toggleModal("Source")'>Source</label>
                 </div>
                 <div class="col-xs-9">
                     <select ng-options="key as value for (key,value) in queryFormVm.dataSources"
@@ -110,12 +105,11 @@
                            class="form-control input-sm" multiple>
                     </select>
                 </div>
-            </div>
+            </div>-->
 
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label">Value</label>
-  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("Year")'></i></a> 
+                    <label class="control-label" ng-click='toggleModal("Year")'>Year</label>
                 </div>
                 <div class="col-xs-3">
                     <input class="form-control input-sm" ng-model="queryFormVm.params.fromYear" name="fromYear" id="fromYear">                    

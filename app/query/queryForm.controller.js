@@ -49,9 +49,6 @@
         //Handle Download Dialog Events
         $scope.downloadButtonShown = false;
 
-
-	queryParams.fromYear= 1541;
-	queryParams.toYear= 2020;
 	vm.year = {
 	    options: {
                 floor: queryParams.fromYear,
@@ -61,27 +58,70 @@
 		onEnd: function() {$scope.queryForm.$setPristine(false)}
 	    }
 	};
-
-	//Get trait data to populate dropdown
-	var fetchTraits = $http({
-		method: 'GET',
-		url: 'https://raw.githubusercontent.com/futres/FutresAPI/master/data/measurementType.json'
-	 }).then(
-	 	function successCallback(response) {
-			var dataObj = response.data
-			var newObj = {}
-			//alert(newObj)
-			dataObj.forEach(function(obj) { 
-				newObj[obj.measurementType] = obj.measurementType
-			});	
-			//alert(newObj)
-			vm.traits = newObj
-		}, 
-		function errorCallback(response) {
-			console.log('error fetching traits from fovt data service');
-			vm.traits = {}
-		}
-	);
+	
+	// get trait labels from our ontology lookup service
+	var traitNameLookup = $http({
+		method: 'GET',		
+		url: 'https://plantphenology.org//futresapi/v2/fovt/'				
+	 	}).then(
+	 		function successCallback(response) {
+			 	var dataObj = response.data
+			 	vm.traitLookupTable = []
+			 	dataObj.forEach(function(obj) {
+					vm.traitLookupTable[obj.termID] = obj.label
+				 })
+			}, 
+			function errorCallback(response) {
+				console.log('error fetching traits from fovt data service');
+				vm.traits = {}
+			}
+		).finally (fetchTraits)
+	
+	//Get trait data to populate dropdown		
+	function fetchTraits () { 
+		// Note that the query here for ES 5.x needs to specify a size
+		// greater than 0 to return just 1 hit, but specify size of 500
+		// to return up to 500 traits
+		var fetchTraitsQuery = JSON.stringify({
+					"size" : 1,
+					"aggs": {
+		  				"traitslist": {
+							"terms": { "field": "traits", "size": 500}
+		  				}
+					}
+	  			})		
+		$http({
+				method: 'POST',		
+				url: 'https://www.plantphenology.org/futresapi/v1/query/_search?pretty',
+				data: fetchTraitsQuery				
+		 	}).then(
+			 function successCallback(response) {
+				var dataObj = response.data.aggregations.traitslist.buckets
+				var newObj = {}
+				
+				dataObj.forEach(function(obj) { 
+					try {	
+						var textLabel = vm.traitLookupTable[obj.key]
+						// undefined attributes are ones that exist outside of 
+						// 1-d extent and force heirarchy
+						if (textLabel != undefined) {
+							var numberString = obj.doc_count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+							var label = textLabel + " (" + numberString +")"	
+							newObj[label] = obj.key	
+						}						
+					} catch(except) {
+						console.log("error: " + obj.key)
+					}
+				});					
+				vm.traits = newObj				
+			}, 
+			function errorCallback(response) {
+				console.log('error fetching traits from fovt data service');
+				vm.traits = {}
+			}
+	).finally (
+		console.log("finished populating measurementTraits drop-down")
+	)}
 
 
 	var fetchProjects = $http({
@@ -92,10 +132,11 @@
 		   var dataObj = response.data
 		   var newObj = {}
 		   dataObj.forEach(function(obj) {
-			   if (obj.public == "True") { 
-					// projectId 232 is sample project
-					if (obj.projectId != 232)   					
-						newObj[obj.projectId] = obj.projectTitle
+			   if (obj.discoverable == "True") { 
+					// projectID 232 is sample project
+					if (obj.projectID != 232)   					
+						newObj[obj.projectID] = obj.projectTitle
+						//console.log(obj.projectTitle)
 			   }
 		   });	
 		   vm.dataSources = newObj
@@ -136,7 +177,7 @@
 	   vm.genus=[]
    }
 );
-var fetchMeasurementUnits = $http({
+/*var fetchMeasurementUnits = $http({
 	method: 'GET',
 	url: 'https://raw.githubusercontent.com/futres/FutresAPI/master/data/measurementUnit.json'
 }).then(
@@ -153,6 +194,7 @@ var fetchMeasurementUnits = $http({
 	   vm.measurementUnit=[]
    }
 );
+*/
         // view toggles
         vm.moreSearchOptions = false;
         vm.showMap = true;
