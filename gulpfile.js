@@ -53,9 +53,10 @@ gulp.task('copy-assets', function() {
         .pipe(gulp.dest('public/bower_components/angularjs-slider/dist/'));
     gulp.src('app/bower_components/ngModal/dist/ng-modal.js')
         .pipe(gulp.dest('public/bower_components/ngModal/dist/'));
-
     gulp.src('app/query/spatialLayers.json')
         .pipe(gulp.dest('public/query/'));
+    gulp.src('app/facets/lib/*')
+        .pipe(gulp.dest('public/facets/lib/'));
 });
 
 gulp.task('clean', function(cb) {
