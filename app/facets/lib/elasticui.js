@@ -481,6 +481,14 @@ var elasticui;
                         _this.updateAgg();
                     }
                 });
+                this.scope.update = function(obj) {
+                    //return obj.key.replace(/\s/g, '_');
+                    // update the following array
+                    //console.log(_this.scope.aggResult.buckets)
+                    //_this.scope.aggResult.buckets[0].key = 'coooooll'
+                    //console.log(obj.key)
+                    //_this.scope.aggResult.buckets.key.replace('obo:PATO_0001708','some other val')
+                }
                 this.scope.$on('$destroy', function () {
                     if (_this.previousProvider) {
                         _this.scope.indexVM.aggregationProviders.remove(_this.previousProvider);
@@ -943,8 +951,9 @@ var elasticui;
                     directive.scope = true;
                     directive.link = {
                         'pre': function (scope, element, attrs) {
+                            console.log('setting up....')
                             elasticui.util.AngularTool.setupBinding($parse, scope, attrs, ["field", "size"]);
-                            scope.agg_name = scope.field.replace(/[^a-z_0-9]/gmi, "_") + "_" + (directives.default_agg_count++);
+                            scope.agg_name = scope.field.replace(/[^a-z_0-9]/gmi, "_") + "_" + (directives.default_agg_count++);                            
                         }
                     };
                     directive.template = '\
@@ -956,6 +965,7 @@ var elasticui;
                     </label>\
                 </li>\
             </ul>';
+                    //console.log(directive)
                     return directive;
                 }
                 SingleselectDirective.$inject = ['$parse'];

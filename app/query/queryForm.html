@@ -27,36 +27,24 @@
         <div class="form form-horizontal">
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label" ng-click='toggleModal("Traits")' ng-click='toggleModal("Traits")'>Measurement</label>
+                    <label class="control-label" ng-click='toggleModal("Traits")'>Measurement</label>
                 </div>
 
 		        <div class="col-xs-9">
                     <select 
                         ng-options="key as value for (value,key) in queryFormVm.traits"
                         ng-model="queryFormVm.params.traits"
-                           class="form-control input-sm" >
+                           class="form-control input-sm" 
+                           ng-change="update()">
                         <option value="">-- Select Trait --</option>
                     </select>
                
                 </div>	
             </div>
     
-            <!--<div class="form-group">
-                <div class="col-xs-3">
-                    <label class="control-label">Unit</label>
-  			        <a><i class="remove glyphicon glyphicon-info-sign glyphicon-white" ng-click='toggleModal("measurementUnit")'></i></a> 
-                </div>
-                <div class="col-xs-9">
-                    <input class="form-control input-sm" ng-model="queryFormVm.params.measurementUnit" list="_measurementUnit" placeholder="--Select Unit--" name="measurementUnit" id="measurementUnit">
-                    <datalist id="_measurementUnit"> 
-                        <option ng-repeat="value in queryFormVm.measurementUnit" value="{{value}}" />                                        
-                    </datalist>
-                </div>                                                                                     
-            </div>
-	    -->
             <div class="form-group">
                 <div class="col-xs-3">
-                    <label class="control-label" ng-click='toggleModal("maxValue")'>Value</label>
+                    <label class="control-label" ng-click='toggleModal("maxValue")'>Value (mm or g)</label>
                 </div>
                 <div class="col-xs-3">
                     <input class="form-control input-sm" ng-model="queryFormVm.params.minValue" name="minValue" id="minValue">                    
