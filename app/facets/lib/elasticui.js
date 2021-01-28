@@ -615,7 +615,7 @@ var elasticui;
                     index: null,
                     loading: false,
                     pageCount: 0,
-                    pageSize: 10,
+                    pageSize: 15,
                     results: null,
                     refresh: function (softRefresh) {
                         if (softRefresh === void 0) { softRefresh = true; }

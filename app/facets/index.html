@@ -3,10 +3,14 @@
 <head>
     <title>ElasticUI Demo</title>
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
     <script src="lib/elasticsearch.angular.js"></script>
     <script src="lib/elastic.js"></script>
     <script src="lib/elasticui.js"></script>
+    <!--<script src="lib/dataGrid.min.js"></script>
+    <script src="table/table.module.js"></script>
+    <script src="table/queryTable.controller.js"></script>-->
+  
     <style>
         .sidebar {
             position: fixed;
@@ -41,6 +45,11 @@
             <div class="col-xs-3 sidebar">
                 <h3>Search Names</h3>
                 <eui-searchbox field="'scientificName'"></eui-searchbox> <!-- ACTION: change to field to search on -->
+                
+                <!--<h3>Value</h3>
+                <input type="text" eui-query="ejs.MatchQuery(measurementValue, fromYear)" ng-model="fromYear" eui-enabled="querystring.length" />\
+                <input class="form-control input-sm" ng-model="queryFormVm.params.fromYear" name="fromYear" id="fromYear">
+                -->
                 <h3>Traits</h3>
                 <eui-singleselect field="'mapped_traits'" size="500"></eui-singleselect>
                 <!--<ul  class="nav nav-list" eui-aggregation="ejs.TermsAggregation(agg_name).field('mapped_traits').size(20)">
@@ -57,16 +66,42 @@
                 <eui-checklist field="'projectID'" size="10"></eui-checklist> 
                 <h3>Results Per Page</h3>
                 <select ng-model="indexVM.pageSize">
-                    <option ng-repeat="item in [10, 20, 50, 100]">{{item}}</option>
+                    <option ng-repeat="item in [10, 15, 20, 50, 100]">{{item}}</option>
                 </select>
             </div>
             <div class="col-xs-9 col-xs-offset-3 main">
                 <h1>Results</h1>
+                <!-- table -->
+                <!--<div 
+                ng-include="'table/queryTable.html'"></div>
+                -->
+                <!--
                 <ul>
                     <li ng-repeat="doc in indexVM.results.hits.hits">
-                        {{doc._source | json | limitTo: 500}} <!-- OPTIONAL: display more meaningful data instead of json -->
+                        {{doc._source | json | limitTo: 500}} 
                     </li>
-                </ul>
+                </ul>-->
+                <table class="table">
+                    <thead>
+                        <tr>
+                          <th scope="col">ScientificName</th>               
+                          <th scope="col">Trait</th>               
+                          <th scope="col">Value</th>               
+                          <th scope="col">Unit</th>               
+                          <th scope="col">YearCollected</th>               
+                          <th scope="col">ProjectID</th>               
+                        </tr>
+                      </thead>
+                      <tbody>
+                    <tr ng-repeat="doc in indexVM.results.hits.hits">
+                        <td>{{doc._source.scientificName}} </td> 
+                        <td>{{doc._source.measurementType}} </td> 
+                        <td>{{doc._source.measurementValue}} </td> 
+                        <td>{{doc._source.measurementUnit}} </td> 
+                        <td>{{doc._source.yearCollected}} </td> 
+                        <td>{{doc._source.projectID}} </td> 
+                    </tr>
+                </table>
                 <eui-simple-paging></eui-simple-paging>
             </div>
         </div>
