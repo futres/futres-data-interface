@@ -52,6 +52,8 @@
                 -->
                 <h3>Traits</h3>
                 <eui-singleselect field="'mapped_traits'" size="500"></eui-singleselect>
+                <h3>Lifestage</h3>
+                <eui-singleselect field="'lifeStage'" size="10"></eui-singleselect>
                 <!--<ul  class="nav nav-list" eui-aggregation="ejs.TermsAggregation(agg_name).field('mapped_traits').size(20)">
                     <li ng-repeat="bucket in aggResult.buckets">
                         <label eui-filter="ejs.TermsFilter(field, bucket.key)">
@@ -88,6 +90,7 @@
                           <th scope="col">Trait</th>               
                           <th scope="col">Value</th>               
                           <th scope="col">Unit</th>               
+                          <th scope="col">lifeStage</th>               
                           <th scope="col">YearCollected</th>               
                           <th scope="col">ProjectID</th>               
                         </tr>
@@ -97,7 +100,8 @@
                         <td>{{doc._source.scientificName}} </td> 
                         <td>{{doc._source.measurementType}} </td> 
                         <td>{{doc._source.measurementValue}} </td> 
-                        <td>{{doc._source.measurementUnit}} </td> 
+                        <td>{{doc._source.measurementUnit}} </td>
+                        <td>{{doc._source.lifeStage}} </td>  
                         <td>{{doc._source.yearCollected}} </td> 
                         <td>{{doc._source.projectID}} </td> 
                     </tr>
