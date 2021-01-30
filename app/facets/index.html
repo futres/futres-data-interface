@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>ElasticUI Demo</title>
+    <title>FuTRES Search</title>
     <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
     <script src="lib/elasticsearch.angular.js"></script>
@@ -20,7 +20,7 @@
             display: block;
             padding: 20px;
             overflow-x: hidden;
-            overflow-y: auto;
+            overflow-y: auto;        
             background-color: #f5f5f5;
             border-right: 1px solid #eee;
         }
@@ -43,8 +43,8 @@
 
         <div class="row">
             <div class="col-xs-3 sidebar">
-                <h1>(Beta) FuTRES Search</h1>
-                <h3>Search Names</h3>
+                <h1>FuTRES Search</h1>
+                <h3>Search Any Names</h3>
                 <eui-searchbox field="'scientificName'"></eui-searchbox> <!-- ACTION: change to field to search on -->
                 
                 <!--<h3>Value</h3>
@@ -53,6 +53,7 @@
                 -->
                 <h3>Traits</h3>
                 <eui-singleselect field="'mapped_traits'" size="500"></eui-singleselect>
+
                 <h3>Lifestage</h3>
                 <eui-singleselect field="'lifeStage'" size="10"></eui-singleselect>
                 <!--<ul  class="nav nav-list" eui-aggregation="ejs.TermsAggregation(agg_name).field('mapped_traits').size(20)">
@@ -65,6 +66,7 @@
                 </ul>-->
                 <h3>Genus</h3>
                 <eui-checklist field="'genus'" size="20"></eui-checklist> <!-- ACTION: change to field to use as facet -->
+
                 <h3>Project</h3>
                 <eui-checklist field="'projectID'" size="10"></eui-checklist> 
                 <h3>Results Per Page</h3>
@@ -73,7 +75,8 @@
                 </select>
                 
                 <p></p>
-                <i>Funding support from the the National Science Foundation.  
+                <i>This site is currently in Beta and may change at any time without warning.
+                Funding support from the the National Science Foundation.  
                 Infrastructure support from iDigBio and CyVerse.
                 This site is made available for research purposes and the site
                 developers make no warranty or guarrantee for data contents.
@@ -81,16 +84,6 @@
             </div>
             <div class="col-xs-9 col-xs-offset-3 main">
                 <h1>Results</h1>
-                <!-- table -->
-                <!--<div 
-                ng-include="'table/queryTable.html'"></div>
-                -->
-                <!--
-                <ul>
-                    <li ng-repeat="doc in indexVM.results.hits.hits">
-                        {{doc._source | json | limitTo: 500}} 
-                    </li>
-                </ul>-->
                 <table class="table">
                     <thead>
                         <tr>
