@@ -37,12 +37,13 @@
             .constant('euiHost', 'https://www.plantphenology.org/api/v1/query/'); // ACTION: change to cluster address
     </script>
 </head>
-<body ng-app="tutorial" eui-index="'futresfacets'"><!-- ACTION: change to index name -->
+<body ng-app="tutorial" eui-index="'futres'"><!-- ACTION: change to index name -->
 
     <div class="container-fluid">
 
         <div class="row">
             <div class="col-xs-3 sidebar">
+                <h1>(Beta) FuTRES Search</h1>
                 <h3>Search Names</h3>
                 <eui-searchbox field="'scientificName'"></eui-searchbox> <!-- ACTION: change to field to search on -->
                 
@@ -70,6 +71,13 @@
                 <select ng-model="indexVM.pageSize">
                     <option ng-repeat="item in [10, 15, 20, 50, 100]">{{item}}</option>
                 </select>
+                
+                <p></p>
+                <i>Funding support from the the National Science Foundation.  
+                Infrastructure support from iDigBio and CyVerse.
+                This site is made available for research purposes and the site
+                developers make no warranty or guarrantee for data contents.
+                Comments can be made by email to jdeck88@gmail.com</i>
             </div>
             <div class="col-xs-9 col-xs-offset-3 main">
                 <h1>Results</h1>
