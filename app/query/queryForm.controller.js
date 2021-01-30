@@ -126,7 +126,7 @@
 
 	var fetchProjects = $http({
 		method: 'GET',
-		url: 'https://raw.githubusercontent.com/futres/FutresAPI/master/data/projects.json'
+		url: 'https://raw.githubusercontent.com/futres/fovt-data-pipeline/master/data/projects.json'
 	}).then(
 		function successCallback(response) {
 		   var dataObj = response.data
@@ -155,7 +155,7 @@
 
    var fetchScientificNames = $http({
 	method: 'GET',
-	url: 'https://raw.githubusercontent.com/futres/FutresAPI/master/data/scientificName.json'
+	url: 'https://raw.githubusercontent.com/futres/fovt-data-pipeline/master/data/scientificName.json'
 }).then(
 	function successCallback(response) {
 	   var dataObj = response.data
@@ -177,24 +177,7 @@
 	   vm.genus=[]
    }
 );
-/*var fetchMeasurementUnits = $http({
-	method: 'GET',
-	url: 'https://raw.githubusercontent.com/futres/FutresAPI/master/data/measurementUnit.json'
-}).then(
-	function successCallback(response) {
-	   var dataObj = response.data
-	   var newObj = []
-	   dataObj.forEach(function(obj) {				
-			newObj.push(obj.measurementUnit)			
-	   });	
-	   vm.measurementUnit = newObj	   
-   }, 
-   function errorCallback(response) {
-	   console.log('error fetching projects from fovt data service');
-	   vm.measurementUnit=[]
-   }
-);
-*/
+
         // view toggles
         vm.moreSearchOptions = false;
         vm.showMap = true;
