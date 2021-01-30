@@ -44,7 +44,7 @@
         <div class="row">
             <div class="col-xs-3 sidebar">
                 <h1>FuTRES Search</h1>
-                <h3>Search Any Names</h3>
+                <h3>Search any name</h3>
                 <eui-searchbox field="'scientificName'"></eui-searchbox> <!-- ACTION: change to field to search on -->
                 
                 <!--<h3>Value</h3>
@@ -69,6 +69,7 @@
 
                 <h3>Project</h3>
                 <eui-checklist field="'projectID'" size="10"></eui-checklist> 
+                
                 <h3>Results Per Page</h3>
                 <select ng-model="indexVM.pageSize">
                     <option ng-repeat="item in [10, 15, 20, 50, 100]">{{item}}</option>
