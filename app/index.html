@@ -21,20 +21,14 @@
             background-color: #f5f5f5;
             border-right: 1px solid #eee;
         }
-
-        .instructions {
-            display: block;
-            margin: 0 auto;
-            width: 450px;
-        }
     </style>
     <script>
         angular
             .module('tutorial', ['elasticui'])
-            .constant('euiHost', 'https://www.plantphenology.org/api/v1/query/'); // ACTION: change to cluster address
+            .constant('euiHost', 'https://www.plantphenology.org/api/v1/query/'); // cluster address
     </script>
 </head>
-<body ng-app="tutorial" eui-index="'futres'" ><!-- ACTION: change to index name -->
+<body ng-app="tutorial" eui-index="'futres'" ><!-- specify index name -->
     
 
     <div class="container-fluid">
@@ -45,10 +39,6 @@
                 <h3>Search any name</h3>
                 <eui-searchbox field="'scientificName'"></eui-searchbox> 
                 
-                <!--<h3>Value</h3>
-                <input type="text" eui-query="ejs.MatchQuery(measurementValue, fromYear)" ng-model="fromYear" eui-enabled="querystring.length" />\
-                <input class="form-control input-sm" ng-model="queryFormVm.params.fromYear" name="fromYear" id="fromYear">
-                -->
                 <h3>Traits</h3>
                 <eui-singleselect field="'mapped_traits'" size="500"></eui-singleselect>
 
