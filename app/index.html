@@ -24,8 +24,15 @@
     </style>
     <script>
         angular
-            .module('tutorial', ['elasticui'])
-            .constant('euiHost', 'https://www.plantphenology.org/api/v1/query/'); // cluster address
+        .module("tutorial", ["elasticui"])
+        .constant("euiHost", "https://www.plantphenology.org/api/v1/query/") // cluster address
+        .controller("myCtrl", function ($scope) {
+          $scope.selectedAttributes = [];
+          $scope.clicked = function () {
+            console.log($scope.indexVM.filters.jsonObjects);
+            if ($scope.indexVM.query) console.log($scope.indexVM.query.query());
+          };
+        });
     </script>
 </head>
 <body ng-app="tutorial" eui-index="'futres'" ><!-- specify index name -->
@@ -36,6 +43,12 @@
         <div class="row">
             <div class="col-xs-3 sidebar">
                 <h1>FuTRES Search</h1>
+                <p>
+                    <md-button ng-click="clicked()" style="color: blue">
+                      DOWNLOAD BUTTON</md-button
+                    >
+                  </p>
+        
                 <h3>Search any name</h3>
                 <eui-searchbox field="'scientificName'"></eui-searchbox> 
                 
@@ -86,7 +99,12 @@
                         <td>{{doc._source.measurementUnit}} </td>
                         <td>{{doc._source.lifeStage}} </td>  
                         <td>{{doc._source.yearCollected}} </td> 
-                        <td>{{doc._source.projectID}} </td> 
+                        <td>{{doc._source.projectId}} </td> 
+                        <!--<td>
+                            {{if ${doc._source.projectId} == 'Vertnet'}} 'Vertnet'
+                            {{else}} <a href='https://geome-db.org/workbench/project-overview?projectId=${doc._source.projectID}' target=_blank>${doc._source.projectID}</a> 
+                            {{/if}}
+                        </td>-->
                     </tr>
                 </table>
                 <eui-simple-paging></eui-simple-paging>
