@@ -29,25 +29,42 @@
         .controller("myCtrl", function ($scope) {
           $scope.selectedAttributes = [];
           $scope.clicked = function () {
+            // Construct query string to download service like
+            // BASE URL:
+            //     https://www.plantphenology.org/futresapi/v2/download/_search?pretty&
+            // QUERY SYNTAX
+            //     q=+mapped_traits:"humerus+length"++AND+++mapped_traits:"length"' 
+            // NOTES:
+            // * repeat each query condition as needed, even if they are the same query (e.g. multiple mapped_traits possible)
+            // * include ++AND++ between each term so the query is AND and not OR (which is default)
+            // * enclose all query values in quotes to prevent searching on individual terms, e.g. "humerus+length"
+            //   to return instances of 'humerus length' instead of ('humerus' or 'length').
+            // * replace all spaces with a + for terms inside quotes
+            // 
+            // Behaviour: After clicking the download BUTTON, need some sort of dialog.  This can be either:
+            //  1. a dialog with some explanatory text and telling user to wait, with another download button, OR
+            //  2. a download progress dialog that closes automatically when complete
+            
             console.log($scope.indexVM.filters.jsonObjects);
             if ($scope.indexVM.query) console.log($scope.indexVM.query.query());
-          };
+          };          
         });
     </script>
 </head>
-<body ng-app="tutorial" eui-index="'futres'" ><!-- specify index name -->
     
+<body ng-app="tutorial" ng-controller="myCtrl" eui-index="'futres'">
 
     <div class="container-fluid">
+        
 
         <div class="row">
             <div class="col-xs-3 sidebar">
                 <h1>FuTRES Search</h1>
                 <p>
-                    <md-button ng-click="clicked()" style="color: blue">
-                      DOWNLOAD BUTTON</md-button
-                    >
-                  </p>
+                    <!--<md-button ng-click="clicked()" style="color: blue">DOWNLOAD BUTTON</md-button>-->
+                    <!--<button type="submit" ng-click="toggleDownloadModal()" class="btn btn-success" ng-show="vm.queryResults.isSet && queryForm.$pristine">Download</button>-->
+                    <button type="submit" ng-click="clicked()" class="btn btn-success">Download</button>
+                </p>
         
                 <h3>Search any name</h3>
                 <eui-searchbox field="'scientificName'"></eui-searchbox> 
