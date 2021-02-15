@@ -29,26 +29,52 @@
         .controller("myCtrl", function ($scope) {
           $scope.selectedAttributes = [];
           $scope.clicked = function () {
-            // Construct query string to download service like
-            // BASE URL:
-            //     https://www.plantphenology.org/futresapi/v2/download/_search?pretty&
-            // QUERY SYNTAX
-            //     q=+mapped_traits:"humerus+length"++AND+++mapped_traits:"length"' 
-            // NOTES:
-            // * repeat each query condition as needed, even if they are the same query (e.g. multiple mapped_traits possible)
-            // * include ++AND++ between each term so the query is AND and not OR (which is default)
-            // * enclose all query values in quotes to prevent searching on individual terms, e.g. "humerus+length"
-            //   to return instances of 'humerus length' instead of ('humerus' or 'length').
-            // * replace all spaces with a + for terms inside quotes
-            // 
-            // Behaviour: After clicking the download BUTTON, need some sort of dialog.  This can be either:
-            //  1. a dialog with some explanatory text and telling user to wait, with another download button, OR
-            //  2. a download progress dialog that closes automatically when complete
-            
-            console.log($scope.indexVM.filters.jsonObjects);
-            if ($scope.indexVM.query) console.log($scope.indexVM.query.query());
-          };          
+            // Construct query string to download service like                                    
+            //console.log($scope.indexVM.filters.jsonObjects);
+            queryTerms = $scope.indexVM.filters.jsonObjects;
+            console.log(queryTerms)
+            queryString= "q="
+            termCounter = 0
+            for ( var i = 0; i < queryTerms.length; i++) {
+		        var obj = JSON.parse(queryTerms[i]);
+ 		    
+                for ( var i = 0; i < queryTerms.length; i++) {
+		            var obj = JSON.parse(queryTerms[i]); 
+		            for ( var key in obj) {    
+                        Statement = obj[key];
+                
+                        for ( var term in obj[key]) {
+                            if (termCounter > 0) {
+                                queryString += "++AND++"
+                            }
+                            value = Statement[term].toString().replace(/\s/g, '+')
+                            queryString += "+" + term+ ":\"" + value+ "\""                            
+                            termCounter++
+                        }                    
+                    }
+                }               
+                
+                if ($scope.indexVM.query) {
+                    if (termCounter > 0) {
+                        queryString += "++AND++" 
+                    }
+                    queryString += "+scientificName:\""+$scope.indexVM.query.query()+"\""                    
+                }
+
+                // Behaviour: After clicking the download BUTTON, need to download file with call to query service.
+                // This can be several things, but we need very first, just #1 implemented
+                //  1. Simply a link to download file and download
+                //  2. a dialog with some explanatory text and telling user to wait, with another download button, OR
+                //  3. a download progress dialog that closes automatically when complete
+                queryStringRootURL = "https://www.plantphenology.org/futresapi/v2/download/_search?"                
+                downloadLink = queryStringRootURL + queryString
+                console.log("downloadLink = " + downloadLink)
+
+            };          
+        }
         });
+
+        
     </script>
 </head>
     
@@ -56,13 +82,12 @@
 
     <div class="container-fluid">
         
-
         <div class="row">
             <div class="col-xs-3 sidebar">
                 <h1>FuTRES Search</h1>
                 <p>
                     <!--<md-button ng-click="clicked()" style="color: blue">DOWNLOAD BUTTON</md-button>-->
-                    <!--<button type="submit" ng-click="toggleDownloadModal()" class="btn btn-success" ng-show="vm.queryResults.isSet && queryForm.$pristine">Download</button>-->
+                    <!--<button type="submit" ng-click="toggleDownloadModal()" class="btn btn-success">Modal</button>-->
                     <button type="submit" ng-click="clicked()" class="btn btn-success">Download</button>
                 </p>
         
@@ -116,7 +141,7 @@
                         <td>{{doc._source.measurementUnit}} </td>
                         <td>{{doc._source.lifeStage}} </td>  
                         <td>{{doc._source.yearCollected}} </td> 
-                        <td>{{doc._source.projectId}} </td> 
+                        <td>{{doc._source.projectID}} </td> 
                         <!--<td>
                             {{if ${doc._source.projectId} == 'Vertnet'}} 'Vertnet'
                             {{else}} <a href='https://geome-db.org/workbench/project-overview?projectId=${doc._source.projectID}' target=_blank>${doc._source.projectID}</a> 
