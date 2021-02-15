@@ -36,6 +36,12 @@
                     queryTerms = $scope.indexVM.filters.jsonObjects;
                     queryString = "q="
                     termCounter = 0
+
+                    if ($scope.indexVM.query) {
+                        queryString += "+scientificName:\"" + $scope.indexVM.query.query() + "\""
+                        termCounter++
+                    }
+
                     for (var i = 0; i < queryTerms.length; i++) {
                         var obj = JSON.parse(queryTerms[i]);
 
@@ -55,63 +61,50 @@
                             }
                         }
 
-                        if ($scope.indexVM.query) {
-                            if (termCounter > 0) {
-                                queryString += "++AND++"
+                    }
+                    if (termCounter > 0) {
+                        $scope.message = false;
+                        queryStringRootURL = "https://www.plantphenology.org/futresapi/v2/download/_search?"
+                        downloadLink = queryStringRootURL + queryString
+                        console.log("downloadLink = " + downloadLink)
+                        $scope.loading = true;
+
+                        $http({
+                            method: 'GET',
+                            url: downloadLink,
+                            keepJson: true,
+                            responseType: 'arraybuffer'
+                        }).then(function successCallback(response) {
+
+                            // here we know to expect a CSV/gzipped file so just name it here
+                            var filename = "futres_data.tar.gz"
+                            var contentType = response.headers['content-type'];
+                            var linkElement = document.createElement('a');
+                            try {
+                                var blob = new Blob([response.data], { type: contentType });
+                                var url = window.URL.createObjectURL(blob);
+
+                                linkElement.setAttribute('href', url);
+
+                                linkElement.setAttribute("download", filename);
+
+                                var clickEvent = new MouseEvent("click", {
+                                    "view": window,
+                                    "bubbles": true,
+                                    "cancelable": false
+                                });
+                                linkElement.dispatchEvent(clickEvent);
+                                $scope.loading = false;
+                            } catch (ex) {
+                                console.log(ex);
                             }
-                            queryString += "+scientificName:\"" + $scope.indexVM.query.query() + "\""
-                        }
-
-                        if (termCounter > 0) {
-                            $scope.message = false;
-
-                            // Behaviour: After clicking the download BUTTON, need to download file with call to query service.
-                            // This can be several things, but we need very first, just #1 implemented
-                            //  1. Simply a link to download file and download
-                            //  2. a dialog with some explanatory text and telling user to wait, with another download button, OR
-                            //  3. a download progress dialog that closes automatically when complete
-                            queryStringRootURL = "https://www.plantphenology.org/futresapi/v2/download/_search?"
-                            downloadLink = queryStringRootURL + queryString
-                            console.log("downloadLink = " + downloadLink)
-                            $scope.loading = true;
-
-                            $http({
-                                method: 'GET',
-                                url: downloadLink,
-                                keepJson: true,
-                                responseType: 'arraybuffer'
-                            }).then(function successCallback(response) {
-
-                                // here we know to expect a CSV/gzipped file so just name it here
-                                var filename = "futres_data.tar.gz"
-                                var contentType = response.headers['content-type'];
-                                var linkElement = document.createElement('a');
-                                try {
-                                    var blob = new Blob([response.data], { type: contentType });
-                                    var url = window.URL.createObjectURL(blob);
-
-                                    linkElement.setAttribute('href', url);
-
-                                    linkElement.setAttribute("download", filename);
-
-                                    var clickEvent = new MouseEvent("click", {
-                                        "view": window,
-                                        "bubbles": true,
-                                        "cancelable": false
-                                    });
-                                    linkElement.dispatchEvent(clickEvent);
-                                    $scope.loading = false;
-                                } catch (ex) {
-                                    console.log(ex);
-                                }
-                            }, function errorCallback(response) {
-                                console.log(response)
-                            });
-                        }
+                        }, function errorCallback(response) {
+                            console.log(response)
+                        });
 
                     };
                     if (termCounter == 0) {
-                    $scope.message = true;
+                        $scope.message = true;
                     }
 
                 }
@@ -133,11 +126,11 @@
                     <!--<md-button ng-click="clicked()" style="color: blue">DOWNLOAD BUTTON</md-button>-->
                     <!--<button type="submit" ng-click="toggleDownloadModal()" class="btn btn-success">Modal</button>-->
                     <button type="submit" ng-click="clicked()" class="btn btn-success">Download</button>
-                    <div ng-show="message">Select at least one filter condition before downloading</div>
-                    <div ng-show="loading">The download process may take several minutes depending on 
-                        available bandwidth and number of records requested.  The futres database needs to 
-                        first package your request and then return the data to your browser.   
-                        If you encounter issues downloading, try reducing the size of your query.</div>
+                <div ng-show="message">Select at least one filter condition before downloading</div>
+                <div ng-show="loading">The download process may take several minutes depending on
+                    available bandwidth and number of records requested. The futres database needs to
+                    first package your request and then return the data to your browser.
+                    If you encounter issues downloading, try reducing the size of your query.</div>
                 </p>
 
                 <h3>Search any name</h3>
