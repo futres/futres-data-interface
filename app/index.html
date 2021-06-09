@@ -81,7 +81,7 @@
                 $scope.message = false;
                 queryStringRootURL =
                   "https://www.plantphenology.org/futresapi/v2/download/_search?";
-                downloadLink = queryStringRootURL + queryString;
+                downloadLink = queryStringRootURL + queryString + "&limit=100000";
                 console.log("downloadLink = " + downloadLink);
                 $scope.loading = true;
 
@@ -149,11 +149,14 @@
               <md-progress-circular mode="indeterminate"></md-progress-circular>
             </div>
           </div>
+	  <div>NOTE: There is a hard limit of 100,000 limits per download.</div>
           <div ng-show="message">
             Select at least one filter condition before downloading
           </div>
           <div ng-show="loading">
-            The download process may take several minutes depending on available
+            There is a hard limit of 100,000 records returned on downloaded results
+	    through this interface.  To retrieve more results please contact the authors.
+	    The download process may take several minutes depending on available
             bandwidth and number of records requested. The futres database needs
             to first package your request and then return the data to your
             browser. If you encounter issues downloading, try reducing the size
