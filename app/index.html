@@ -93,7 +93,7 @@
                 }).then(
                   function successCallback(response) {
                     // here we know to expect a CSV/gzipped file so just name it here
-                    var filename = "futres_data.tar.gz";
+                    //var filename = "futres_data.tar.gz";
                     var contentType = response.headers["content-type"];
                     var linkElement = document.createElement("a");
                     try {
@@ -104,7 +104,7 @@
 
                       linkElement.setAttribute("href", url);
 
-                      linkElement.setAttribute("download", filename);
+                      //linkElement.setAttribute("download", filename);
 
                       var clickEvent = new MouseEvent("click", {
                         view: window,
