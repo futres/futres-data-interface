@@ -39,7 +39,7 @@
     <script>
       angular
         .module("tutorial", ["elasticui", "ngMaterial"])
-        .constant("euiHost", "https://www.plantphenology.org/api/v1/query/") // cluster address
+        .constant("euiHost", "https://biscicol.org/api/v1/query/") // cluster address
         .controller("myCtrl", [
           "$scope",
           "$http",
@@ -80,7 +80,7 @@
               if (termCounter > 0) {
                 $scope.message = false;
                 queryStringRootURL =
-                  "https://www.plantphenology.org/futresapi/v3/download/_search?";
+                  "https://biscicol.org/futresapi/v3/download/_search?";
                 downloadLink = queryStringRootURL + queryString + "&limit=100000";
                 console.log("downloadLink = " + downloadLink);
                 $scope.loading = true;
