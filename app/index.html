@@ -39,7 +39,7 @@
     <script>
       angular
         .module("tutorial", ["elasticui", "ngMaterial"])
-        .constant("euiHost", "https://biscicol.org/api/v1/query/") // cluster address
+        .constant("euiHost", "https://biscicol.org/futresapi/v1/query/") // cluster address
         .controller("myCtrl", [
           "$scope",
           "$http",
@@ -174,6 +174,15 @@
 
           <h3>Lifestage</h3>
           <eui-singleselect field="'lifeStage'" size="10"></eui-singleselect>
+
+          <h3>Class</h3>
+          <eui-singleselect field="'class'" size="10"></eui-singleselect>
+
+          <h3>Order</h3>
+          <eui-singleselect field="'order'" size="10"></eui-singleselect>
+
+          <h3>Family</h3>
+          <eui-singleselect field="'family'" size="10"></eui-singleselect>
 
           <h3>Genus</h3>
           <eui-singleselect field="'genus'" size="10"></eui-singleselect>
