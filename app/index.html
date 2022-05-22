@@ -229,6 +229,7 @@
                 <th scope="col">lifeStage</th>
                 <th scope="col">YearCollected</th>
                 <th scope="col">ProjectID</th>
+                <th scope="col">occurrenceID</th>
               </tr>
             </thead>
             <tbody>
@@ -240,6 +241,7 @@
                 <td>{{doc._source.lifeStage}}</td>
                 <td>{{doc._source.yearCollected}}</td>
                 <td>{{doc._source.projectID}}</td>
+                <td>{{doc._source.occurrenceID}}</td>
                 <!--<td>
                             {{if ${doc._source.projectId} == 'Vertnet'}} 'Vertnet'
                             {{else}} <a href='https://geome-db.org/workbench/project-overview?projectId=${doc._source.projectID}' target=_blank>${doc._source.projectID}</a> 
