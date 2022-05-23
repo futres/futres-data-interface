@@ -241,12 +241,8 @@
                 <td>{{doc._source.lifeStage}}</td>
                 <td>{{doc._source.yearCollected}}</td>
                 <td>{{doc._source.projectID}}</td>
-                <td>{{doc._source.occurrenceID}}</td>
-                <!--<td>
-                            {{if ${doc._source.projectId} == 'Vertnet'}} 'Vertnet'
-                            {{else}} <a href='https://geome-db.org/workbench/project-overview?projectId=${doc._source.projectID}' target=_blank>${doc._source.projectID}</a> 
-                            {{/if}}
-                        </td>-->
+                <td ng-if="doc._source.occurrenceID.startsWith('http')"><a target=_blank href='{{doc._source.occurrenceID}}'>{{doc._source.occurrenceID}}</a></td>
+                <td ng-if="!doc._source.occurrenceID.startsWith('http')">{{doc._source.occurrenceID}}</td>
               </tr>
             </tbody>
           </table>
